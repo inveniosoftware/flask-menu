@@ -22,21 +22,22 @@
 ## or submit itself to any jurisdiction.
 
 """
-    invenio.ext.menualchemy
-    ----
+    flask.ext.menu
+    --------------
+
     This extension allows creation of menus organised in a tree structure.
     Those menus can be then displayed using templates.
 """
 
-from flask import url_for, current_app
-from werkzeug import LocalProxy
+from flask import url_for, current_app, request, Blueprint
+from werkzeug.local import LocalProxy
 
-CONDITION_TRUE = (lambda: True)
-CONDITION_FALSE = (lambda: False)
+CONDITION_TRUE = lambda: True
+CONDITION_FALSE = lambda: False
 
 
-class MenuAlchemy(object):
-    """Extension object for invenio.ext.menualchemy"""
+class Menu(object):
+    """Extension object for invenio.ext.menu"""
 
     def __init__(self, app=None):
         self.app = app
@@ -44,73 +45,16 @@ class MenuAlchemy(object):
             self.init_app(app)
 
     def init_app(self, app):
-        app.extensions['menualchemy'] = MenuEntryMixin('', None)
+        app.extensions['menu'] = MenuEntryMixin('', None)
         app.context_processor(lambda: dict(
             current_menu=current_menu))
-
-    config = {}
 
     @staticmethod
     def root():
         """
         :return: Root entry of current application's menu.
         """
-        return current_app.extensions['menualchemy']
-
-    @staticmethod
-    def register_menu(blueprint, path, text, order=0,
-                      endpoint_arguments_constructor=None,
-                      dynamic_list_constructor=None,
-                      active_when=CONDITION_FALSE,
-                      visible_when=CONDITION_TRUE):
-        """Decorate endpoints that should be displayed in a menu.
-
-        Example::
-
-            @register_menu(blueprint, '.', _('Your Tags'))
-            def index():
-                pass
-
-        :param blueprint: Blueprint which owns the function.
-        :param path: Path to this item in menu hierarchy,
-            for example 'main.category.item'. Path can be an object
-            with custom __str__ method: it will be converted on first request,
-            therefore you can use current_app inside this __str__ method.
-        :param text: Text displayed as link.
-        :param order: Index of item among other items in the same menu.
-        :param endpoint_arguments_constructor: Function returning dict of
-            arguments passed to url_for when creating the link.
-        :param active_when: Function returning True when the item
-            should be displayed as active.
-        :param visible_when: Function returning True when this item
-            should be displayed.
-        :param dynamic_list_constructor: Function returning a list of
-            entries to be displayed by this item. Every object should
-            have 'text' and 'url' properties/dict elements. This property
-            will not be directly affect the menu system, but allows
-            other systems to use it while rendering.
-        """
-
-        #Decorator function
-        def menu_decorator(f):
-            endpoint = blueprint.name + '.' + f.__name__
-
-            @blueprint.before_app_first_request
-            def _register_menu_item():
-                # str(path) allows path to be a string-convertible object
-                # that may be useful for delayed evaluation of path
-                item = current_menu.submenu(str(path))
-                item.register(
-                    endpoint,
-                    text,
-                    order,
-                    endpoint_arguments_constructor=endpoint_arguments_constructor,
-                    dynamic_list_constructor=dynamic_list_constructor,
-                    active_when=active_when,
-                    visible_when=visible_when)
-            return f
-
-        return menu_decorator
+        return current_app.extensions['menu']
 
 
 class MenuEntryMixin(object):
@@ -130,22 +74,24 @@ class MenuEntryMixin(object):
         self._order = 0
         self._endpoint_arguments_constructor = None
         self._dynamic_list_constructor = None
-        self._active_when = CONDITION_FALSE
+        self._active_when = lambda: request.endpoint == self._endpoint
         self._visible_when = CONDITION_TRUE
 
     def register(self, endpoint, text, order=0,
                  endpoint_arguments_constructor=None,
                  dynamic_list_constructor=None,
-                 active_when=CONDITION_FALSE,
-                 visible_when=CONDITION_TRUE):
+                 active_when=None,
+                 visible_when=None):
         """Assigns endpoint and display values."""
         self._endpoint = endpoint
         self._text = text
         self._order = order
         self._endpoint_arguments_constructor = endpoint_arguments_constructor
         self._dynamic_list_constructor = dynamic_list_constructor
-        self._active_when = active_when or CONDITION_FALSE
-        self._visible_when = visible_when or CONDITION_TRUE
+        if active_when is not None:
+            self._active_when = active_when
+        if visible_when is not None:
+            self._visible_when = visible_when
 
     def submenu(self, path, auto_create=True):
         """Returns submenu placed at the given path in the hierarchy.
@@ -158,23 +104,24 @@ class MenuEntryMixin(object):
             to satisfy the given path.
         :return: Submenu placed at the given path in the hierarchy.
         """
-
-        if not path:
+        if not path or path in ['.', '']:
             return self
 
         (path_head, dot, path_tail) = path.partition('.')
 
-        # Create the entry if it does not exist
-        if path_head not in self._child_entries:
+        if path_head == '':
+            next_entry = self
+        elif path_head not in self._child_entries:
+            # Create the entry if it does not exist
             if auto_create:
                 # The entry was not found so create a new one
-                self._child_entries[path_head] = \
+                next_entry = self._child_entries[path_head] = \
                     MenuEntryMixin(path_head, self)
             else:
                 # The entry was not found, but we are forbidden to create
                 return None
-
-        next_entry = self._child_entries[path_head]
+        else:
+            next_entry = self._child_entries[path_head]
 
         if path_tail:
             return next_entry.submenu(path_tail, auto_create)
@@ -194,8 +141,8 @@ class MenuEntryMixin(object):
                 they are on different branches.
         """
 
-        ancestor_entry = self.submenu(from_path)
-        child_entry = self.submenu(to_path)
+        ancestor_entry = self.submenu(from_path, auto_create=False)
+        child_entry = self.submenu(to_path, auto_create=False)
 
         if not (ancestor_entry and child_entry):
             # Incorrect paths
@@ -260,15 +207,68 @@ class MenuEntryMixin(object):
         return self._text is not None and self._visible_when()
 
 
-## Global object that is proxy to the current application menu.
-current_menu = LocalProxy(MenuAlchemy.root)
+def register_menu(app, path, text, order=0,
+                  endpoint_arguments_constructor=None,
+                  dynamic_list_constructor=None,
+                  active_when=None,
+                  visible_when=None):
+    """Decorate endpoints that should be displayed in a menu.
 
-## Decorator for menu item registration.
-register_menu = MenuAlchemy.register_menu
+    Example::
 
-def setup_app(app):
-    """Creates a menu instance attached to the application."""
-    MenuAlchemy(app)
-    return app
+        @register_menu(app, '.', _('Home'))
+        def index():
+            pass
 
-__all__ = ['current_menu', 'register_menu', 'MenuAlchemy', 'setup_app']
+    :param app: Application or Blueprint which owns the
+        function view.
+    :param path: Path to this item in menu hierarchy,
+        for example 'main.category.item'. Path can be an object
+        with custom __str__ method: it will be converted on first request,
+        therefore you can use current_app inside this __str__ method.
+    :param text: Text displayed as link.
+    :param order: Index of item among other items in the same menu.
+    :param endpoint_arguments_constructor: Function returning dict of
+        arguments passed to url_for when creating the link.
+    :param active_when: Function returning True when the item
+        should be displayed as active.
+    :param visible_when: Function returning True when this item
+        should be displayed.
+    :param dynamic_list_constructor: Function returning a list of
+        entries to be displayed by this item. Every object should
+        have 'text' and 'url' properties/dict elements. This property
+        will not be directly affect the menu system, but allows
+        other systems to use it while rendering.
+    """
+
+    #Decorator function
+    def menu_decorator(f):
+        if isinstance(app, Blueprint):
+            endpoint = app.name + '.' + f.__name__
+            before_first_request = app.before_app_first_request
+        else:
+            endpoint = f.__name__
+            before_first_request = app.before_first_request
+
+        @before_first_request
+        def _register_menu_item():
+            # str(path) allows path to be a string-convertible object
+            # that may be useful for delayed evaluation of path
+            item = current_menu.submenu(str(path))
+            item.register(
+                endpoint,
+                text,
+                order,
+                endpoint_arguments_constructor=endpoint_arguments_constructor,
+                dynamic_list_constructor=dynamic_list_constructor,
+                active_when=active_when,
+                visible_when=visible_when)
+        return f
+
+    return menu_decorator
+
+
+#: Global object that is proxy to the current application menu.
+current_menu = LocalProxy(Menu.root)
+
+__all__ = ['current_menu', 'register_menu', 'Menu']
