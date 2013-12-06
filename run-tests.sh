@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##
 ## This file is part of Flask-Menu
 ## Copyright (C) 2013 CERN.
@@ -20,24 +19,5 @@
 ## In applying this licence, CERN does not waive the privileges and immunities
 ## granted to it by virtue of its status as an Intergovernmental Organization
 ## or submit itself to any jurisdiction.
-
-language: python
-
-python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-
-install:
-  - pip install --upgrade pip  --use-mirrors
-  - pip install coveralls --use-mirrors
-  - pip install .
-
-script:
-  - coverage run --source=flask_menu setup.py test
-
-after_success:
-  - coveralls
-
-notifications:
-  email: false
+coverage run setup.py test
+coverage report -m

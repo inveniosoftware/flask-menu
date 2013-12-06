@@ -7,9 +7,9 @@ Flask-Menu
 .. image:: https://coveralls.io/repos/inveniosoftware/flask-menu/badge.png?branch=master
     :target: https://coveralls.io/r/inveniosoftware/flask-menu
 .. image:: https://pypip.in/v/flask-menu/badge.png
-   :target: https://crate.io/packages/flask-menu/
+    :target: https://crate.io/packages/flask-menu/
 .. image:: https://pypip.in/d/flask-menu/badge.png
-   :target: https://crate.io/packages/flask-menu/
+    :target: https://crate.io/packages/flask-menu/
 
 Installation
 ============
@@ -18,7 +18,7 @@ Flask-Menu is on PyPI so all you need is: ::
     pip install Flask-Menu
 
 Documentation
-============
+=============
 Documentation is available at <http://flask-menu.readthedocs.org> or can be build using Sphinx: ::
 
     pip install Sphinx
