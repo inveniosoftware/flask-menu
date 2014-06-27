@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Flask-Menu
-## Copyright (C) 2013 CERN.
+## Copyright (C) 2013, 2014 CERN.
 ##
 ## Flask-Menu is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -25,12 +25,13 @@ from setuptools import setup
 
 setup(
     name='Flask-Menu',
-    version='0.1',
+    version='0.1.0',
     url='http://github.com/inveniosoftware/flask-menu/',
     license='GPLv2',
     author='Invenio collaboration',
     author_email='info@invenio-software.org',
-    description='Flask Menu',
+    description='Flask-Menu is a Flask extension that adds support '
+        'for generating menus.',
     long_description=open('README.rst').read(),
     packages=['flask_menu'],
     zip_safe=False,
@@ -47,7 +48,13 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Topic :: Software Development :: Libraries :: Python Modules'
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Development Status :: 5 - Production/Stable'
     ],
     test_suite='nose.collector',
     tests_require=['nose', 'coverage'],
