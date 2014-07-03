@@ -1,6 +1,6 @@
-==========
-Flask-Menu
-==========
+============
+ Flask-Menu
+============
 
 .. image:: https://travis-ci.org/inveniosoftware/flask-menu.png?branch=master
     :target: https://travis-ci.org/inveniosoftware/flask-menu
@@ -11,6 +11,11 @@ Flask-Menu
 .. image:: https://pypip.in/d/Flask-Menu/badge.png
     :target: https://pypi.python.org/pypi/Flask-Menu/
 
+About
+=====
+Flask-Menu is a Flask extension that adds support for generating
+menus.
+
 Installation
 ============
 Flask-Menu is on PyPI so all you need is: ::
@@ -19,18 +24,20 @@ Flask-Menu is on PyPI so all you need is: ::
 
 Documentation
 =============
-Documentation is available at <http://flask-menu.readthedocs.org> or can be build using Sphinx: ::
+Documentation is readable at http://flask-menu.readthedocs.org or can be build using Sphinx: ::
 
+    git submodule init
+    git submodule update
     pip install Sphinx
     python setup.py build_sphinx
 
 Testing
 =======
-Running the tests are as simple as: ::
+Running the test suite is as simple as: ::
 
     python setup.py test
 
-or (to also show test coverage) ::
+or, to also show code coverage: ::
 
     source run-tests.py
 
