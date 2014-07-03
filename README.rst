@@ -6,10 +6,10 @@ Flask-Menu
     :target: https://travis-ci.org/inveniosoftware/flask-menu
 .. image:: https://coveralls.io/repos/inveniosoftware/flask-menu/badge.png?branch=master
     :target: https://coveralls.io/r/inveniosoftware/flask-menu
-.. image:: https://pypip.in/v/flask-menu/badge.png
-    :target: https://crate.io/packages/flask-menu/
-.. image:: https://pypip.in/d/flask-menu/badge.png
-    :target: https://crate.io/packages/flask-menu/
+.. image:: https://pypip.in/v/Flask-Menu/badge.png
+    :target: https://pypi.python.org/pypi/Flask-Menu/
+.. image:: https://pypip.in/d/Flask-Menu/badge.png
+    :target: https://pypi.python.org/pypi/Flask-Menu/
 
 Installation
 ============
