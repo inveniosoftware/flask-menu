@@ -31,6 +31,7 @@
 
 from flask import url_for, current_app, request, Blueprint
 from werkzeug.local import LocalProxy
+from .version import __version__
 
 CONDITION_TRUE = lambda: True
 CONDITION_FALSE = lambda: False
@@ -271,4 +272,4 @@ def register_menu(app, path, text, order=0,
 #: Global object that is proxy to the current application menu.
 current_menu = LocalProxy(Menu.root)
 
-__all__ = ['current_menu', 'register_menu', 'Menu']
+__all__ = ['current_menu', 'register_menu', 'Menu', '__version__']
