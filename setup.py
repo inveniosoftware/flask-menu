@@ -22,10 +22,19 @@
 ## or submit itself to any jurisdiction.
 
 from setuptools import setup
+import os
+import re
+
+# Get the version string. Cannot be done with import!
+with open(os.path.join('flask_menu', 'version.py'), 'rt') as f:
+    version = re.search(
+        '__version__\s*=\s*"(?P<version>.*)"\n',
+        f.read()
+    ).group('version')
 
 setup(
     name='Flask-Menu',
-    version='0.1.0',
+    version=version,
     url='http://github.com/inveniosoftware/flask-menu/',
     license='GPLv2',
     author='Invenio collaboration',
