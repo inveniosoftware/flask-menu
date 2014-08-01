@@ -98,10 +98,11 @@ class TestMenu(FlaskTestCase):
             assert item_1 == current_menu.submenu('level2').children[0]
             assert item_2 == current_menu.submenu('level2').children[1]
 
-    # The following test is known to fail on Python 3.4.0 while it
-    # works well on lesser or higher Pythons.  (Additionally cannot
-    # use unittest.skipIf() here due to Python-2.6.)
-    if sys.version_info != (3, 4, 0, 'final', 0):
+    # The following test is known to fail on Python 3.4.0 and 3.4.1
+    # while it works well on lesser or higher Pythons.  (Additionally
+    # cannot use unittest.skipIf() here due to Python-2.6.)
+    if sys.version_info != (3, 4, 0, 'final', 0) and \
+       sys.version_info != (3, 4, 1, 'final', 0):
         def test_blueprint(self):
             Menu(self.app)
             blueprint = Blueprint('foo', 'foo', url_prefix="/foo")
