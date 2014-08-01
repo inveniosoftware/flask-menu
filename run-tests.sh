@@ -1,6 +1,7 @@
+#!/bin/sh
 ##
 ## This file is part of Flask-Menu
-## Copyright (C) 2013 CERN.
+## Copyright (C) 2013, 2014 CERN.
 ##
 ## Flask-Menu is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
