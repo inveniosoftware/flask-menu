@@ -1,52 +1,241 @@
 ============
  Flask-Menu
 ============
+.. currentmodule:: flask_menu
 
-Flask-Menu
-==========
+.. raw:: html
 
-.. image:: https://travis-ci.org/inveniosoftware/flask-menu.png?branch=master
-    :target: https://travis-ci.org/inveniosoftware/flask-menu
-.. image:: https://coveralls.io/repos/inveniosoftware/flask-menu/badge.png?branch=master
-    :target: https://coveralls.io/r/inveniosoftware/flask-menu
+    <p style="height:22px; margin:0 0 0 2em; float:right">
+        <a href="https://travis-ci.org/inveniosoftware/flask-menu">
+            <img src="https://travis-ci.org/inveniosoftware/flask-menu.png?branch=master"
+                 alt="travis-ci badge"/>
+        </a>
+        <a href="https://coveralls.io/r/inveniosoftware/flask-menu">
+            <img src="https://coveralls.io/repos/inveniosoftware/flask-menu/badge.png?branch=master"
+                 alt="coveralls.io badge"/>
+        </a>
+    </p>
 
-Flask-Menu is a Flask extension that adds support for generating
-menus.
 
-User's Guide
+Flask-Menu is a Flask extension that adds support for generating menus.
+
+Contents
+--------
+
+.. contents::
+   :local:
+   :depth: 1
+   :backlinks: none
+
+
+.. _installation:
+
+Installation
 ============
 
-This part of the documentation will show you how to get started in using
-Flask-Menu with Flask.
+Flask-Menu is on PyPI so all you need is:
 
-.. toctree::
-   :maxdepth: 2
+.. code-block:: console
 
-   installation
-   quickstart
-   userguide
+    $ pip install Flask-Menu
+
+The development version can be downloaded from `its page at GitHub
+<http://github.com/inveniosoftware/flask-menu>`_.
+
+.. code-block:: console
+
+    $ git clone https://github.com/inveniosoftware/flask-menu.git
+    $ cd flask-menu
+    $ python setup.py develop
+    $ ./run-tests.sh
+
+Requirements
+^^^^^^^^^^^^
+
+Flask-Menu has the following dependencies:
+
+* `Flask <https://pypi.python.org/pypi/Flask>`_
+* `six <https://pypi.python.org/pypi/six>`_
+
+Flask-Menu requires Python version 2.6, 2.7 or 3.3+.
 
 
-API Reference
-=============
+.. _usage:
+
+Usage
+=====
+
+This guide assumes that you have successfully installed ``Flask-Menu``
+package already.  If not, please follow the :ref:`installation`
+instructions first.
+
+Simple Example
+^^^^^^^^^^^^^^
+
+Here is a simple Flask-Menu usage example:
+
+.. code-block:: python
+
+    from flask import Flask
+    from flask import render_template_string
+    from flask.ext import menu
+
+    app = Flask(__name__)
+    menu.Menu(app=app)
+
+    def tmpl_show_menu():
+        return render_template_string(
+            """
+            {%- for item in current_menu.children %}
+                {% if item.active %}*{% endif %}{{ item.text }}
+            {% endfor -%}
+            """)
+
+    @app.route('/')
+    @menu.register_menu(app, '.', 'Home')
+    def index():
+        return tmpl_show_menu()
+
+    @app.route('/first')
+    @menu.register_menu(app, '.first', 'First', order=0)
+    def first():
+        return tmpl_show_menu()
+
+    @app.route('/second')
+    @menu.register_menu(app, '.second', 'Second', order=1)
+    def second():
+        return tmpl_show_menu()
+
+    if __name__ == '__main__':
+        app.run(debug=True)
+
+If you save the above as ``app.py``, you can run the example
+application using your Python interpreter:
+
+.. code-block:: console
+
+    $ python app.py
+     * Running on http://127.0.0.1:5000/
+
+and you can observe generated menu on the example pages:
+
+.. code-block:: console
+
+    $ firefox http://127.0.0.1:5000/
+    $ firefox http://127.0.0.1:5000/first
+    $ firefox http://127.0.0.1:5000/second
+
+You should now be able to emulate this example in your own Flask
+applications.  For more information, please read the :ref:`templating`
+guide, the :ref:`blueprints` guide, and peruse the :ref:`api`.
+
+
+.. _templating:
+
+Templating
+==========
+
+By default, a proxy object to `current_menu` is added to your Jinja2
+context as `current_menu` to help you with creating navigation bar.
+For example: ::
+
+    <ul>
+    {%- for item in current_menu -%}
+        <li>
+        <a href="{{ item.url}}">{{ item.text }}</a>
+        {%- if item.children -%}
+        <ul>
+            {{ loop(item.children) }}
+        </ul>
+        {%- endif -%}
+        </li>
+    {%- endfor -%}
+    </ul>
+
+.. _blueprints:
+
+Blueprint Support
+=================
+
+The most import part of an modular Flask application is Blueprint. You
+can create one for your application somewhere in your code and decorate
+your view function, like this: ::
+
+    from flask import Blueprint
+    from flask.ext import menu
+
+    bp_account = Blueprint('account', __name__, url_prefix='/account')
+
+    @bp_account.route('/')
+    @menu.register_menu(bp_account, '.account', 'Your account')
+    def index():
+        pass
+
+
+Sometimes you want to combine multiple blueprints and organize the
+navigation to certain hierarchy. ::
+
+    from flask import Blueprint
+    from flask.ext import breadcrumbs
+
+    bp_social = Blueprint('social', __name__, url_prefix='/social')
+
+    @bp_account.route('/list')
+    @menu.register_menu(bp_social, '.account.list', 'Social networks')
+    def list():
+        pass
+
+As a result of this, your `current_breadcrumbs` object with contain list
+with 3 items during processing request for `/social/list`. ::
+
+    >>> from example import app
+    >>> from flask.ext import menu
+    >>> import account
+    >>> import social
+    >>> app.register_blueprint(account.bp_account)
+    >>> app.register_blueprint(social.bp_social)
+    >>> with app.test_client() as c:
+    ...     c.get('/social/list')
+    ...     assert current_menu.submenu('account.list').active
+    ...     current_menu.children
+
+
+.. _api:
+
+API
+===
 
 If you are looking for information on a specific function, class or
 method, this part of the documentation is for you.
 
-.. toctree::
-   :maxdepth: 2
+Flask extension
+^^^^^^^^^^^^^^^
 
-   api
+.. module:: flask_menu
 
-Additional Notes
-================
+.. autoclass:: Menu
+   :members:
 
-Notes on how to contribute, legal information and changelog are here for
-the interested.
+Decorators
+^^^^^^^^^^
 
-.. toctree::
-   :maxdepth: 2
+.. autofunction:: register_menu
 
-   contributing
-   changelog
-   license
+Proxies
+^^^^^^^
+
+.. data:: current_menu
+
+   Root of a menu item.
+
+
+.. include:: ../CHANGES
+
+.. include:: ../CONTRIBUTING.rst
+
+License
+=======
+
+.. include:: ../LICENSE
+
+.. include:: ../AUTHORS

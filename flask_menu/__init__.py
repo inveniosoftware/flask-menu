@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
-##
-## This file is part of Flask-Menu
-## Copyright (C) 2013, 2014 CERN.
-##
-## Flask-Menu is free software; you can redistribute it and/or modify
-## it under the terms of the Revised BSD License; see LICENSE file for
-## more details.
+#
+# This file is part of Flask-Menu
+# Copyright (C) 2013, 2014 CERN.
+#
+# Flask-Menu is free software; you can redistribute it and/or modify
+# it under the terms of the Revised BSD License; see LICENSE file for
+# more details.
 
-"""
-    flask.ext.menu
-    --------------
+"""This extension allows creation of menus organised in a tree structure.
 
-    This extension allows creation of menus organised in a tree structure.
-    Those menus can be then displayed using templates.
+Those menus can be then displayed using templates.
 """
 
 from flask import url_for, current_app, request, Blueprint
@@ -24,28 +21,36 @@ CONDITION_FALSE = lambda: False
 
 
 class Menu(object):
-    """Extension object for invenio.ext.menu"""
+
+    """Flask extension implementation."""
 
     def __init__(self, app=None):
-        self.app = app
+        """Initialize Menu extension."""
         if app is not None:
             self.init_app(app)
 
     def init_app(self, app):
+        """Initialize a Flask application."""
+        self.app = app
+        # Follow the Flask guidelines on usage of app.extensions
+        if not hasattr(app, 'extensions'):
+            app.extensions = {}
+        if 'menu' in app.extensions:
+            raise RuntimeError("Flask application is already initialized.")
         app.extensions['menu'] = MenuEntryMixin('', None)
+
         app.context_processor(lambda: dict(
             current_menu=current_menu))
 
     @staticmethod
     def root():
-        """
-        :return: Root entry of current application's menu.
-        """
+        """Return a root entry of current application's menu."""
         return current_app.extensions['menu']
 
 
 class MenuEntryMixin(object):
-    """Represents a entry node in the menu tree.
+
+    """Represent a entry node in the menu tree.
 
     Provides information for displaying links (text, url, visible, active).
     Navigate the hierarchy using :meth:`children` and :meth:`submenu`.
@@ -69,7 +74,7 @@ class MenuEntryMixin(object):
                  dynamic_list_constructor=None,
                  active_when=None,
                  visible_when=None):
-        """Assigns endpoint and display values."""
+        """Assign endpoint and display values."""
         self._endpoint = endpoint
         self._text = text
         self._order = order
@@ -81,10 +86,10 @@ class MenuEntryMixin(object):
             self._visible_when = visible_when
 
     def submenu(self, path, auto_create=True):
-        """Returns submenu placed at the given path in the hierarchy.
+        """Return submenu placed at the given path in the hierarchy.
 
-        If it does not exist, a new one is created.
-        Returns None if path string is invalid.
+        If it does not exist, a new one is created. Return None if path
+        string is invalid.
 
         :param path: Path to submenu as a string 'qua.bua.cua'
         :param auto_create: If True, missing entries will be created
@@ -117,17 +122,16 @@ class MenuEntryMixin(object):
             return next_entry
 
     def list_path(self, from_path, to_path):
+        """Return all items on path between two specified entries.
+
+        Only if one of them is an ancestor of the other.
+
+        :param from_path: The ancestor entry.
+        :param to_path: The child entry.
+
+        :return: List of entries between those items or None if
+            they are on different branches.
         """
-            Lists all items on path between two specified entries,
-            if one of them is an ancestor of the other.
-
-            :param from_path: The ancestor entry.
-            :param to_path: The child entry.
-
-            :return: List of entries between those items or None if
-                they are on different branches.
-        """
-
         ancestor_entry = self.submenu(from_path, auto_create=False)
         child_entry = self.submenu(to_path, auto_create=False)
 
@@ -150,13 +154,12 @@ class MenuEntryMixin(object):
             return branch_list
 
     def hide(self):
-        """Makes the entry always hidden."""
+        """Make the entry always hidden."""
         self._visible_when = CONDITION_FALSE
 
     @property
     def dynamic_list(self):
-        """ Extends this entry into a list if the
-            dynamic list constructor was specified"""
+        """Return list from dynamic list constructor."""
         if self._dynamic_list_constructor:
             return self._dynamic_list_constructor()
         else:
@@ -177,6 +180,7 @@ class MenuEntryMixin(object):
 
     @property
     def url(self):
+        """Generate url from given endpoint and optional dynamic arguments."""
         if not self._endpoint:
             return '#'
 
@@ -187,10 +191,12 @@ class MenuEntryMixin(object):
 
     @property
     def active(self):
+        """Return True if the menu item is active."""
         return self._active_when()
 
     @property
     def visible(self):
+        """Return True if the menu item is visible."""
         return self._text is not None and self._visible_when()
 
 
@@ -227,9 +233,8 @@ def register_menu(app, path, text, order=0,
         will not be directly affect the menu system, but allows
         other systems to use it while rendering.
     """
-
-    #Decorator function
     def menu_decorator(f):
+        """Decorator of a view function that should be included in the menu."""
         if isinstance(app, Blueprint):
             endpoint = app.name + '.' + f.__name__
             before_first_request = app.before_app_first_request
@@ -258,4 +263,4 @@ def register_menu(app, path, text, order=0,
 #: Global object that is proxy to the current application menu.
 current_menu = LocalProxy(Menu.root)
 
-__all__ = ['current_menu', 'register_menu', 'Menu', '__version__']
+__all__ = ('current_menu', 'register_menu', 'Menu', '__version__')

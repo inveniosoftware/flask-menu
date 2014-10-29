@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-##
-## This file is part of Flask-Menu
-## Copyright (C) 2013, 2014 CERN.
-##
-## Flask-Menu is free software; you can redistribute it and/or modify
-## it under the terms of the Revised BSD License; see LICENSE file for
-## more details.
+#
+# This file is part of Flask-Menu
+# Copyright (C) 2013, 2014 CERN.
+#
+# Flask-Menu is free software; you can redistribute it and/or modify
+# it under the terms of the Revised BSD License; see LICENSE file for
+# more details.
 
 language: python
 
@@ -17,11 +17,14 @@ python:
 
 install:
   - pip install --upgrade pip  --use-mirrors
-  - pip install coveralls --use-mirrors
-  - pip install .
+  - pip install coveralls pep257 --use-mirrors
+  - pip install pytest pytest-pep8 pytest-cov pytest-cache --use-mirrors
+  - pip install -e .[docs]
 
 script:
-  - coverage run --source=flask_menu setup.py test
+  - pep257 flask_menu
+  - "sphinx-build -qnNW docs docs/_build/html"
+  - python setup.py test
 
 after_success:
   - coveralls
