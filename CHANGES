@@ -1,9 +1,16 @@
-Changelog
-=========
+Changes
+=======
 
-Here you can see the full list of changes between each Flask-Menu
-release.
+Version 0.2.0 (released 2014-11-04)
+
+- The Flask-Menu extension is now released under more permissive
+  Revised BSD License. (#12)
+- New support for additional keyword arguments stored as `MenuItem`
+  attributes. (#19)
+- Richer quick-start usage example. (#16)
+- Support for Python 3.4. (#6)
+- Documentation improvements. (#3)
 
 Version 0.1.0 (released 2014-06-27)
------------------------------------
+
 - Initial public release.
