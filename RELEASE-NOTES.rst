@@ -1,8 +1,8 @@
 ===============================
- Flask-Menu v0.1.0 is released
+ Flask-Menu v0.2.0 is released
 ===============================
 
-Flask-Menu v0.1.0 was released on June 27, 2014.
+Flask-Menu v0.2.0 was released on November 4, 2014.
 
 About
 -----
@@ -13,7 +13,13 @@ menus.
 What's new
 ----------
 
-- Initial public release.
+- The Flask-Menu extension is now released under more permissive
+  Revised BSD License. (#12)
+- New support for additional keyword arguments stored as `MenuItem`
+  attributes.  (#19)
+- For testing execute run-tests.sh.
+- Support for Python 3.4. (#6)
+- New About section and minor wordsmithing. (#3)
 
 Installation
 ------------
@@ -23,7 +29,7 @@ Installation
 Documentation
 -------------
 
-   http://flask-menu.readthedocs.org/en/v0.1.0
+   http://flask-menu.readthedocs.org/en/v0.2.0
 
 Homepage
 --------
