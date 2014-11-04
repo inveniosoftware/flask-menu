@@ -178,6 +178,7 @@ class MenuEntryMixin(object):
 
     @property
     def children(self):
+        """Return list of sorted children."""
         return sorted(self._child_entries.values(),
                       key=lambda entry: getattr(entry, 'order', 0))
 

@@ -216,6 +216,9 @@ Flask extension
 .. autoclass:: Menu
    :members:
 
+.. autoclass:: MenuEntryMixin
+   :members:
+
 Decorators
 ^^^^^^^^^^
 
