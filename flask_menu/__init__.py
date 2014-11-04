@@ -240,6 +240,11 @@ def register_menu(app, path, text, order=0,
         have 'text' and 'url' properties/dict elements. This property
         will not be directly affect the menu system, but allows
         other systems to use it while rendering.
+    :param kwargs: Additional arguments will be available as attributes
+        on registered :class:`MenuEntryMixin` instance.
+
+    .. versionadded:: 0.2.0
+       The *kwargs* arguments.
     """
     def menu_decorator(f):
         """Decorator of a view function that should be included in the menu."""
