@@ -73,7 +73,8 @@ class MenuEntryMixin(object):
                  endpoint_arguments_constructor=None,
                  dynamic_list_constructor=None,
                  active_when=None,
-                 visible_when=None):
+                 visible_when=None,
+                 **kwargs):
         """Assign endpoint and display values."""
         self._endpoint = endpoint
         self._text = text
@@ -84,6 +85,12 @@ class MenuEntryMixin(object):
             self._active_when = active_when
         if visible_when is not None:
             self._visible_when = visible_when
+
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                raise RuntimeError('Can not override existing attribute '
+                                   '{0}.'.format(key))
+            setattr(self, key, value)
 
     def submenu(self, path, auto_create=True):
         """Return submenu placed at the given path in the hierarchy.
@@ -204,7 +211,8 @@ def register_menu(app, path, text, order=0,
                   endpoint_arguments_constructor=None,
                   dynamic_list_constructor=None,
                   active_when=None,
-                  visible_when=None):
+                  visible_when=None,
+                  **kwargs):
     """Decorate endpoints that should be displayed in a menu.
 
     Example::
@@ -254,7 +262,8 @@ def register_menu(app, path, text, order=0,
                 endpoint_arguments_constructor=endpoint_arguments_constructor,
                 dynamic_list_constructor=dynamic_list_constructor,
                 active_when=active_when,
-                visible_when=visible_when)
+                visible_when=visible_when,
+                **kwargs)
         return f
 
     return menu_decorator
