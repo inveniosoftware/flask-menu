@@ -209,3 +209,29 @@ class TestMenu(FlaskTestCase):
             c.get(url)
             assert url == current_menu.submenu('test').url
             assert current_menu.submenu('missing').url == '#'
+
+    def test_kwargs(self):
+        """Test optional arguments."""
+        Menu(self.app)
+        count = 5
+
+        @self.app.route('/test')
+        @register_menu(self.app, 'test', 'Test', count=count)
+        def test():
+            return 'count'
+
+        with self.app.test_client() as c:
+            c.get('/test')
+            assert count == current_menu.submenu('test').count
+
+    def test_kwargs_override(self):
+        """Test if optional arguments cannot be overriden."""
+        Menu(self.app)
+
+        @self.app.route('/test')
+        @register_menu(self.app, 'test', 'Test', url='/test')
+        def test():
+            pass
+
+        with self.app.test_client() as c:
+            self.assertRaises(RuntimeError, c.get, '/test')
