@@ -137,19 +137,21 @@ Templating
 
 By default, a proxy object to `current_menu` is added to your Jinja2
 context as `current_menu` to help you with creating navigation bar.
-For example: ::
+For example:
+
+.. code-block:: jinja
 
     <ul>
-    {%- for item in current_menu -%}
-        <li>
+      {%- for item in current_menu.children recursive -%}
+      <li>
         <a href="{{ item.url}}">{{ item.text }}</a>
         {%- if item.children -%}
         <ul>
-            {{ loop(item.children) }}
+          {{ loop(item.children) }}
         </ul>
         {%- endif -%}
-        </li>
-    {%- endfor -%}
+      </li>
+      {%- endfor -%}
     </ul>
 
 .. _blueprints:
@@ -159,7 +161,9 @@ Blueprint Support
 
 The most import part of an modular Flask application is Blueprint. You
 can create one for your application somewhere in your code and decorate
-your view function, like this: ::
+your view function, like this:
+
+.. code-block:: python
 
     from flask import Blueprint
     from flask.ext import menu
@@ -173,7 +177,9 @@ your view function, like this: ::
 
 
 Sometimes you want to combine multiple blueprints and organize the
-navigation to certain hierarchy. ::
+navigation to certain hierarchy.
+
+.. code-block:: python
 
     from flask import Blueprint
     from flask.ext import breadcrumbs
@@ -186,7 +192,9 @@ navigation to certain hierarchy. ::
         pass
 
 As a result of this, your `current_breadcrumbs` object with contain list
-with 3 items during processing request for `/social/list`. ::
+with 3 items during processing request for `/social/list`.
+
+.. code-block:: python
 
     >>> from example import app
     >>> from flask.ext import menu
@@ -198,7 +206,6 @@ with 3 items during processing request for `/social/list`. ::
     ...     c.get('/social/list')
     ...     assert current_menu.submenu('account.list').active
     ...     current_menu.children
-
 
 .. _api:
 
