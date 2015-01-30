@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of Flask-Menu
+# Copyright (C) 2015 CERN.
+#
+# Flask-Menu is free software; you can redistribute it and/or modify
+# it under the terms of the Revised BSD License; see LICENSE file for
+# more details.
+
+web:
+  build: .
+  command: python examples/simple/app.py
+  ports:
+   - "5000:5000"
+  volumes:
+   - .:/code
