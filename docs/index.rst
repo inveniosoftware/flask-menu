@@ -182,7 +182,7 @@ navigation to certain hierarchy.
 .. code-block:: python
 
     from flask import Blueprint
-    from flask.ext import breadcrumbs
+    from flask.ext import menu
 
     bp_social = Blueprint('social', __name__, url_prefix='/social')
 
@@ -191,13 +191,13 @@ navigation to certain hierarchy.
     def list():
         pass
 
-As a result of this, your `current_breadcrumbs` object with contain list
-with 3 items during processing request for `/social/list`.
+As a result of this, your `current_menu` object will contain a list
+with 3 items while processing a request for `/social/list`.
 
 .. code-block:: python
 
     >>> from example import app
-    >>> from flask.ext import menu
+    >>> from flask.ext.menu import current_menu
     >>> import account
     >>> import social
     >>> app.register_blueprint(account.bp_account)
