@@ -1,0 +1,10 @@
+components:
+- README
+- docker
+- docs
+- kwalitee
+- menu
+- setup
+- tests
+- travis
+- version
