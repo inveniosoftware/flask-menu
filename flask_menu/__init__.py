@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Flask-Menu
-# Copyright (C) 2013, 2014 CERN.
+# Copyright (C) 2013, 2014, 2015 CERN.
 #
 # Flask-Menu is free software; you can redistribute it and/or modify
 # it under the terms of the Revised BSD License; see LICENSE file for
@@ -12,12 +12,24 @@
 Those menus can be then displayed using templates.
 """
 
-from flask import url_for, current_app, request, Blueprint
+import inspect
+import types
+
+from flask import Blueprint, current_app, request, url_for
+
 from werkzeug.local import LocalProxy
+
 from .version import __version__
 
-CONDITION_TRUE = lambda: True
-CONDITION_FALSE = lambda: False
+
+def CONDITION_TRUE(*args, **kwargs):
+    """Return always True."""
+    return True
+
+
+def CONDITION_FALSE(*args, **kwargs):
+    """Return always False."""
+    return False
 
 
 class Menu(object):
@@ -66,8 +78,11 @@ class MenuEntryMixin(object):
         self._order = 0
         self._endpoint_arguments_constructor = None
         self._dynamic_list_constructor = None
-        self._active_when = lambda: request.endpoint == self._endpoint
         self._visible_when = CONDITION_TRUE
+
+    def _active_when(self):
+        """Define condition when a menu entry is active."""
+        return request.endpoint == self._endpoint
 
     def register(self, endpoint, text, order=0,
                  endpoint_arguments_constructor=None,
@@ -82,7 +97,10 @@ class MenuEntryMixin(object):
         self._endpoint_arguments_constructor = endpoint_arguments_constructor
         self._dynamic_list_constructor = dynamic_list_constructor
         if active_when is not None:
-            self._active_when = active_when
+            if len(inspect.getargspec(active_when)[0]) == 1:
+                self._active_when = types.MethodType(active_when, self)
+            else:
+                self._active_when = active_when
         if visible_when is not None:
             self._visible_when = visible_when
 
@@ -206,6 +224,17 @@ class MenuEntryMixin(object):
     def visible(self):
         """Return True if the menu item is visible."""
         return self._text is not None and self._visible_when()
+
+    def has_active_child(self, recursive=True):
+        """Return True if the menu has an active child."""
+        for child in self._child_entries.values():
+            if child.active:
+                return True
+        if recursive:
+            for child in self._child_entries.values():
+                if child.has_active_child(recursive=recursive):
+                    return True
+        return False
 
 
 def register_menu(app, path, text, order=0,

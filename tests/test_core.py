@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Flask-Menu
-# Copyright (C) 2013, 2014 CERN.
+# Copyright (C) 2013, 2014, 2015 CERN.
 #
 # Flask-Menu is free software; you can redistribute it and/or modify
 # it under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
 import sys
+
 from unittest import TestCase
+
 from flask import Blueprint, Flask, request, url_for
 
 from flask.ext.menu import Menu, current_menu, register_menu
@@ -78,6 +80,13 @@ class TestMenu(FlaskTestCase):
             c.get('/level3')
             assert current_menu.submenu('.level2.level3').active
             assert current_menu.submenu('level2.level3').active
+
+            assert not current_menu.has_active_child(recursive=False)
+            assert current_menu.has_active_child()
+            assert current_menu.submenu('level2').has_active_child(
+                recursive=False)
+            assert current_menu.submenu('level2').has_active_child()
+
             item_2 = current_menu.submenu('level2.level3')
             item_1 = current_menu.submenu('level2.level3B')
             assert item_1.order < item_2.order
@@ -174,7 +183,8 @@ class TestMenu(FlaskTestCase):
             return 'never'
 
         @self.app.route('/normal')
-        @register_menu(self.app, 'normal', 'Normal')
+        @register_menu(self.app, 'normal', 'Normal', active_when=lambda self:
+                       request.endpoint == self._endpoint)
         def normal():
             return 'normal'
 
