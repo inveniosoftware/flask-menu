@@ -1,8 +1,8 @@
 ===============================
- Flask-Menu v0.2.0 is released
+ Flask-Menu v0.3.0 is released
 ===============================
 
-Flask-Menu v0.2.0 was released on November 4, 2014.
+Flask-Menu v0.3.0 was released on March 17, 2015.
 
 About
 -----
@@ -13,13 +13,10 @@ menus.
 What's new
 ----------
 
-- The Flask-Menu extension is now released under more permissive
-  Revised BSD License. (#12)
-- New support for additional keyword arguments stored as `MenuItem`
-  attributes. (#19)
-- Richer quick-start usage example. (#16)
-- Support for Python 3.4. (#6)
-- Documentation improvements. (#3)
+- New method `has_active_child(recursive=True)` in `MenuEntryMixin`. (#25)
+- Fixed documentation of blueprint example. (#21)
+- Configuration for Docker and demo app. (#22 #29)
+- Fixed template example and added code block types. (#14)
 
 Installation
 ------------
@@ -29,7 +26,7 @@ Installation
 Documentation
 -------------
 
-   http://flask-menu.readthedocs.org/en/v0.2.0
+   http://flask-menu.readthedocs.org/en/v0.3.0
 
 Homepage
 --------

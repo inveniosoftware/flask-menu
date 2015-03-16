@@ -1,6 +1,13 @@
 Changes
 =======
 
+Version 0.3.0 (released 2015-03-17)
+
+- New method `has_active_child(recursive=True)` in `MenuEntryMixin`.  (#25)
+- Fixed documentation of blueprint example. (#21)
+- Configuration for Docker and demo app. (#22 #29)
+- Fixed template example and added code block types.  (#14)
+
 Version 0.2.0 (released 2014-11-04)
 
 - The Flask-Menu extension is now released under more permissive
