@@ -7,9 +7,31 @@
 # it under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
+# Use Python-2.7:
 FROM python:2.7
-ADD . /code
+
+# Install some prerequisites ahead of `setup.py` in order to profit
+# from the docker build cache:
+RUN pip install 'coverage<4.0a1' \
+                flask \
+                pep257 \
+                pytest \
+                pytest-cov \
+                pytest-pep8 \
+                sphinx
+
+# Add sources to `code` and work there:
 WORKDIR /code
-RUN pip install pep257
-RUN pip install sphinx
-RUN python setup.py develop
+ADD . /code
+
+# Install Flask-Menu:
+RUN pip install -e .[docs]
+
+# Run container as user `flaskmenu` with UID `1000`, which should match
+# current host user in most situations:
+RUN adduser --uid 1000 --disabled-password --gecos '' flaskmenu && \
+    chown -R flaskmenu:flaskmenu /code
+
+# Start simple example application:
+USER flaskmenu
+CMD  ["python", "examples/simple/app.py"]
