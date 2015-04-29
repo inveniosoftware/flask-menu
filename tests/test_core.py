@@ -172,10 +172,15 @@ class TestMenu(FlaskTestCase):
     def test_active_when(self):
         Menu(self.app)
 
+        @self.app.route('/')
+        @register_menu(self.app, 'root', 'Root')
+        def root():
+            return 'root'
+
         @self.app.route('/always')
         @register_menu(self.app, 'always', 'Always', active_when=lambda: True)
         def always():
-            return 'never'
+            return 'always'
 
         @self.app.route('/never')
         @register_menu(self.app, 'never', 'Never', active_when=lambda: False)
@@ -183,22 +188,76 @@ class TestMenu(FlaskTestCase):
             return 'never'
 
         @self.app.route('/normal')
-        @register_menu(self.app, 'normal', 'Normal', active_when=lambda self:
-                       request.endpoint == self._endpoint)
+        @register_menu(self.app, 'normal', 'Normal')
         def normal():
             return 'normal'
 
         data = {
-            'never': {'never': False, 'always': True, 'normal': False},
-            'always': {'never': False, 'always': True, 'normal': False},
-            'normal': {'never': False, 'always': True, 'normal': True},
+            '/never': {
+                'root':   False,
+                'never':  False,
+                'always': True,
+                'normal': False
+            },
+            '/always': {
+                'root':   False,
+                'never':  False,
+                'always': True,
+                'normal': False
+            },
+            '/normal': {
+                'root':   False,
+                'never':  False,
+                'always': True,
+                'normal': True
+            },
+            '/normal/foo': {
+                'root':   False,
+                'never':  False,
+                'always': True,
+                'normal': True
+            },
+            '/bar/normal': {
+                'root':   False,
+                'never':  False,
+                'always': True,
+                'normal': False
+            },
+            '/bar/normal/foo': {
+                'root':   False,
+                'never':  False,
+                'always': True,
+                'normal': False
+            },
+            '/': {
+                'root':   True,
+                'never':  False,
+                'always': True,
+                'normal': False
+            },
+            '': {
+                'root':   True,
+                'never':  False,
+                'always': True,
+                'normal': False
+            },
         }
-        for (k, v) in data.items():
+        for (path, testset) in data.items():
             with self.app.test_client() as c:
-                c.get('/' + k)
-                for (endpoint, active) in v.items():
-                    self.assertEqual(current_menu.submenu(endpoint).active,
-                                     active)
+                c.get(path)
+                for (endpoint, active_should) in testset.items():
+                    active_is = current_menu.submenu(endpoint).active
+                    self.assertEqual(
+                        active_is,
+                        active_should,
+                        'path="{0}" submenu_by_endpoint="{1}" '
+                        'active_is={2} active_should={3}'.format(
+                            path,
+                            endpoint,
+                            active_is,
+                            active_should
+                        )
+                    )
 
     def test_dynamic_url(self):
         Menu(self.app)

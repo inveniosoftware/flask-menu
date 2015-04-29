@@ -82,7 +82,11 @@ class MenuEntryMixin(object):
 
     def _active_when(self):
         """Define condition when a menu entry is active."""
-        return request.endpoint == self._endpoint
+        matching_endpoint = request.endpoint == self._endpoint
+        matching_subpath = len(self.url) > 1 \
+            and request.path.startswith(self.url)
+        matching_completpath = request.path == self.url
+        return matching_endpoint or matching_subpath or matching_completpath
 
     def register(self, endpoint, text, order=0,
                  endpoint_arguments_constructor=None,
