@@ -207,6 +207,48 @@ with 3 items while processing a request for `/social/list`.
     ...     assert current_menu.submenu('account.list').active
     ...     current_menu.children
 
+
+Flask-Classy
+============
+
+Flask-Classy is a library commonly used in Flask development and gives 
+additional structure to apps which already make use of blueprints as
+well as apps which do not use blueprints. 
+
+Using Flask-Menu with Flask-Classy is rather simple:
+
+.. code-block:: python
+
+    from flask_classy import FlaskView
+    import flask_menu as menu
+
+    class MyEndpoint(FlaskView):
+        route_base = '/'
+
+        @menu.classy_menu_item('frontend.account', 'Home', order=0)
+        def index(self):
+            # Do something.
+            pass
+
+
+Instead of using the `@menu.register_menu` decorator, we use classy_menu_item. 
+All usage is otherwise the same to `register_menu`, however you do not need 
+to provide reference to the blueprint/app.
+
+You do have to register the entire class with flask-menu at runtime however.
+
+.. code-block:: python
+
+
+    import flask_menu as menu
+    from MyEndpoint import MyEndpoint
+    from flask import Blueprint
+
+    bp = Blueprint('bp', __name__)
+
+    MyEndpoint.register(bp)
+    menu.register_flaskview(bp, MyEndpoint)
+
 .. _api:
 
 API
@@ -226,10 +268,12 @@ Flask extension
 .. autoclass:: MenuEntryMixin
    :members:
 
+
 Decorators
 ^^^^^^^^^^
 
 .. autofunction:: register_menu
+
 
 Proxies
 ^^^^^^^
@@ -237,6 +281,15 @@ Proxies
 .. data:: current_menu
 
    Root of a menu item.
+
+
+Flask-Classy
+^^^^^^^^^^^^
+.. module:: flask_menu.classy
+
+.. autofunction:: register_flaskview
+
+.. autofunction:: classy_menu_item
 
 
 .. include:: ../CHANGES

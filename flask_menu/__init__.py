@@ -15,7 +15,7 @@ Those menus can be then displayed using templates.
 import inspect
 import types
 
-from flask import Blueprint, current_app, request, url_for
+from flask import Blueprint, current_app, request, url_for, g
 
 from werkzeug.local import LocalProxy
 
@@ -54,6 +54,12 @@ class Menu(object):
         app.context_processor(lambda: dict(
             current_menu=current_menu))
 
+        @app.url_value_preprocessor
+        def url_preprocessor(route, args):
+            """Store the current route endpoint and arguments."""
+            g._menu_kwargs = args
+            g._menu_route = route
+
     @staticmethod
     def root():
         """Return a root entry of current application's menu."""
@@ -79,6 +85,7 @@ class MenuEntryMixin(object):
         self._endpoint_arguments_constructor = None
         self._dynamic_list_constructor = None
         self._visible_when = CONDITION_TRUE
+        self._expected_args = []
 
     def _active_when(self):
         """Define condition when a menu entry is active."""
@@ -93,11 +100,13 @@ class MenuEntryMixin(object):
                  dynamic_list_constructor=None,
                  active_when=None,
                  visible_when=None,
+                 expected_args=None,
                  **kwargs):
         """Assign endpoint and display values."""
         self._endpoint = endpoint
         self._text = text
         self._order = order
+        self._expected_args = expected_args or []
         self._endpoint_arguments_constructor = endpoint_arguments_constructor
         self._dynamic_list_constructor = dynamic_list_constructor
         if active_when is not None:
@@ -217,7 +226,17 @@ class MenuEntryMixin(object):
         if self._endpoint_arguments_constructor:
             return url_for(self._endpoint,
                            **self._endpoint_arguments_constructor())
-        return url_for(self._endpoint)
+
+        # Inject current args. Allows usage when inside a blueprint with a url
+        # param.
+        # Filter out any arguments which don't need to be passed.
+        args = {}
+        if hasattr(g, '_menu_kwargs') and g._menu_kwargs:
+            for key in g._menu_kwargs:
+                if key in self._expected_args:
+                    args[key] = g._menu_kwargs[key]
+
+        return url_for(self._endpoint, **args)
 
     @property
     def active(self):
@@ -238,6 +257,20 @@ class MenuEntryMixin(object):
             for child in self._child_entries.values():
                 if child.has_active_child(recursive=recursive):
                     return True
+        return False
+
+    def has_visible_child(self, recursive=True):
+        """Return True if the menu has a visible child."""
+        result = False
+        for child in self._child_entries.values():
+            if child.visible:
+                return True
+
+        if recursive:
+            for child in self._child_entries.values():
+                if child.visible or child.has_visible_child(recursive=True):
+                    return True
+
         return False
 
 
@@ -289,6 +322,8 @@ def register_menu(app, path, text, order=0,
             endpoint = f.__name__
             before_first_request = app.before_first_request
 
+        expected = inspect.getargspec(f).args
+
         @before_first_request
         def _register_menu_item():
             # str(path) allows path to be a string-convertible object
@@ -302,6 +337,7 @@ def register_menu(app, path, text, order=0,
                 dynamic_list_constructor=dynamic_list_constructor,
                 active_when=active_when,
                 visible_when=visible_when,
+                expected_args=expected,
                 **kwargs)
         return f
 

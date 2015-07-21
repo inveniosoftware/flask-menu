@@ -55,7 +55,8 @@ tests_require = [
     'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
     'pytest>=2.6.1',
-    'coverage<4.0a1'
+    'coverage<4.0a1',
+    'flask-classy>=0.6.10',
 ]
 
 setup(
@@ -78,6 +79,7 @@ setup(
     ],
     extras_require={
         'docs': ['sphinx'],
+        'classy': ['flask-classy>=0.6.10'],
     },
     tests_require=tests_require,
     cmdclass={'test': PyTest},
