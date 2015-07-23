@@ -35,7 +35,7 @@ Homepage
 
    https://github.com/inveniosoftware/flask-menu
 
-Good luck and thanks for choosing Flask-Menu.
+Happy hacking and thanks for flying Flask-Menu.
 
 | Invenio Development Team
 |   Email: info@invenio-software.org
