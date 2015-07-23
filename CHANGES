@@ -1,6 +1,15 @@
 Changes
 =======
 
+Version 0.4.0 (released 2015-07-23)
+
+- Flask-Classy support and automatic detection of parameters for
+  `url_for`.  (#33)
+- Improves how the default active state of items is determined.  (#32)
+- Adds `.dockerignore` excluding among others Python cache
+  files.  This solves a problem when using both `tox` and `docker` to run
+  the test suite on the same host.  (#29)
+
 Version 0.3.0 (released 2015-03-17)
 
 - New method `has_active_child(recursive=True)` in `MenuEntryMixin`.  (#25)

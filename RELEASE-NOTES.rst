@@ -1,8 +1,8 @@
 ===============================
- Flask-Menu v0.3.0 is released
+ Flask-Menu v0.4.0 is released
 ===============================
 
-Flask-Menu v0.3.0 was released on March 17, 2015.
+Flask-Menu v0.4.0 was released on July 23, 2015.
 
 About
 -----
@@ -13,20 +13,22 @@ menus.
 What's new
 ----------
 
-- New method `has_active_child(recursive=True)` in `MenuEntryMixin`. (#25)
-- Fixed documentation of blueprint example. (#21)
-- Configuration for Docker and demo app. (#22 #29)
-- Fixed template example and added code block types. (#14)
+- Flask-Classy support and automatic detection of parameters for
+  `url_for`.  (#33)
+- Improves how the default active state of items is determined.  (#32)
+- Adds `.dockerignore` excluding among others Python cache
+  files.  This solves a problem when using both `tox` and `docker` to run
+  the test suite on the same host.  (#29)
 
 Installation
 ------------
 
-   $ pip install Flask-Menu
+   $ pip install Flask-Menu==0.4.0
 
 Documentation
 -------------
 
-   http://flask-menu.readthedocs.org/en/v0.3.0
+   http://flask-menu.readthedocs.org/en/v0.4.0
 
 Homepage
 --------
