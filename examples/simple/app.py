@@ -16,9 +16,9 @@ Usage:
   $ firefox http://0.0.0.0:5000/second
 """
 
-from flask import Flask
-from flask import render_template_string
-from flask.ext import menu
+from flask import Flask, render_template_string
+
+import flask_menu as menu
 
 app = Flask(__name__)
 menu.Menu(app=app)

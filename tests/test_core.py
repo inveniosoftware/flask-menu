@@ -439,7 +439,7 @@ class TestMenu(FlaskTestCase):
                     )
 
     def test_classy_endpoint_with_args(self):
-        from flask.ext.classy import FlaskView, route
+        from flask_classy import FlaskView, route
 
         class MyEndpoint(FlaskView):
             route_base = '/'
@@ -487,7 +487,7 @@ class TestMenu(FlaskTestCase):
                     )
 
     def test_classy_endpoint(self):
-        from flask.ext.classy import FlaskView
+        from flask_classy import FlaskView
 
         class MyEndpoint(FlaskView):
             route_base = '/'

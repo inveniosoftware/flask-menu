@@ -78,10 +78,10 @@ Here is a simple Flask-Menu usage example:
 
     from flask import Flask
     from flask import render_template_string
-    from flask.ext import menu
+    from flask_menu import Menu, register_menu
 
     app = Flask(__name__)
-    menu.Menu(app=app)
+    Menu(app=app)
 
     def tmpl_show_menu():
         return render_template_string(
@@ -92,17 +92,17 @@ Here is a simple Flask-Menu usage example:
             """)
 
     @app.route('/')
-    @menu.register_menu(app, '.', 'Home')
+    @register_menu(app, '.', 'Home')
     def index():
         return tmpl_show_menu()
 
     @app.route('/first')
-    @menu.register_menu(app, '.first', 'First', order=0)
+    @register_menu(app, '.first', 'First', order=0)
     def first():
         return tmpl_show_menu()
 
     @app.route('/second')
-    @menu.register_menu(app, '.second', 'Second', order=1)
+    @register_menu(app, '.second', 'Second', order=1)
     def second():
         return tmpl_show_menu()
 
@@ -166,12 +166,12 @@ your view function, like this:
 .. code-block:: python
 
     from flask import Blueprint
-    from flask.ext import menu
+    from flask_menu import register_menu
 
     bp_account = Blueprint('account', __name__, url_prefix='/account')
 
     @bp_account.route('/')
-    @menu.register_menu(bp_account, '.account', 'Your account')
+    @register_menu(bp_account, '.account', 'Your account')
     def index():
         pass
 
@@ -182,12 +182,12 @@ navigation to certain hierarchy.
 .. code-block:: python
 
     from flask import Blueprint
-    from flask.ext import menu
+    from flask_menu import register_menu
 
     bp_social = Blueprint('social', __name__, url_prefix='/social')
 
     @bp_account.route('/list')
-    @menu.register_menu(bp_social, '.account.list', 'Social networks')
+    @register_menu(bp_social, '.account.list', 'Social networks')
     def list():
         pass
 
@@ -197,7 +197,7 @@ with 3 items while processing a request for `/social/list`.
 .. code-block:: python
 
     >>> from example import app
-    >>> from flask.ext.menu import current_menu
+    >>> from flask_menu import current_menu
     >>> import account
     >>> import social
     >>> app.register_blueprint(account.bp_account)
@@ -220,12 +220,12 @@ Using Flask-Menu with Flask-Classy is rather simple:
 .. code-block:: python
 
     from flask_classy import FlaskView
-    import flask_menu as menu
+    from flask_menu import classy_menu_item
 
     class MyEndpoint(FlaskView):
         route_base = '/'
 
-        @menu.classy_menu_item('frontend.account', 'Home', order=0)
+        @classy_menu_item('frontend.account', 'Home', order=0)
         def index(self):
             # Do something.
             pass
@@ -240,14 +240,14 @@ You do have to register the entire class with flask-menu at runtime however.
 .. code-block:: python
 
 
-    import flask_menu as menu
     from MyEndpoint import MyEndpoint
     from flask import Blueprint
+    from flask_menu import register_flaskview
 
     bp = Blueprint('bp', __name__)
 
     MyEndpoint.register(bp)
-    menu.register_flaskview(bp, MyEndpoint)
+    register_flaskview(bp, MyEndpoint)
 
 .. _api:
 
@@ -285,6 +285,7 @@ Proxies
 
 Flask-Classy
 ^^^^^^^^^^^^
+
 .. module:: flask_menu.classy
 
 .. autofunction:: register_flaskview
