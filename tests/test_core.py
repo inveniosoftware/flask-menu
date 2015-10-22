@@ -17,7 +17,6 @@ from flask_menu.classy import classy_menu_item, register_flaskview
 
 
 class FlaskTestCase(TestCase):
-
     """
     Mix-in class for creating the Flask application
     """
@@ -214,6 +213,46 @@ class TestMenu(FlaskTestCase):
                 for (endpoint, visible) in v.items():
                     self.assertEqual(current_menu.submenu(endpoint).visible,
                                      visible)
+
+    def test_active_item(self):
+        """Test active_item method."""
+        Menu(self.app)
+
+        @self.app.route('/')
+        @register_menu(self.app, 'root', 'root')
+        def root():
+            return "root"
+
+        @self.app.route('/sub1/item1')
+        @register_menu(self.app, 'root.sub1.item1', 'Sub 1 - Item 1')
+        def sub1_item1():
+            return "sub1_item1"
+
+        @self.app.route('/sub2/item1')
+        @register_menu(self.app, 'root.sub2.item1', 'Sub 2 - Item 1')
+        def sub2_item1():
+            return "sub2_item1"
+
+        @self.app.route('/sub2/item2')
+        @register_menu(self.app, 'root.sub2.item2', 'Sub 2 - Item 2')
+        def sub2_item2():
+            return "sub2_item2"
+
+        with self.app.test_client() as c:
+            c.get('/')
+            self.assertEqual(
+                current_menu.active_item, current_menu.submenu('root'))
+            c.get('/sub1/item1')
+            self.assertEqual(current_menu.active_item,
+                             current_menu.submenu('root.sub1.item1'))
+            sub1 = current_menu.submenu('root.sub1')
+            self.assertEqual(sub1.active_item,
+                             current_menu.submenu('root.sub1.item1'))
+            sub2 = current_menu.submenu('root.sub2')
+            self.assertIsNone(sub2.active_item)
+            c.get('/sub2/item2')
+            self.assertEqual(sub2.active_item,
+                             current_menu.submenu('root.sub2.item2'))
 
     def test_active_when(self):
         Menu(self.app)

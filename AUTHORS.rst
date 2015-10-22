@@ -14,3 +14,4 @@ Contact us at `info@invenio-software.org <mailto:info@invenio-software.org>`_
 * Florian Merges <fmerges@fstarter.org>
 * Marco Neumann <marco@crepererum.net>
 * Nick Whyte <nick@nickwhyte.com>
+* Sami Hiltunen <sami.mikael.hiltunen@cern.ch>

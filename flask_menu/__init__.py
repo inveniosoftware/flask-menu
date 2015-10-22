@@ -194,6 +194,24 @@ class MenuEntryMixin(object):
         self._visible_when = CONDITION_FALSE
 
     @property
+    def active_item(self):
+        """Return the active item from the menu's tree.
+
+        Return self if the item itself is active. Return an
+        active child if there is one. If there are no active menu items,
+        None will be returned.
+        """
+        if self.active:
+            return self
+
+        for child in self.children:
+            active = child.active_item
+            if active is not None:
+                return active
+
+        return None
+
+    @property
     def dynamic_list(self):
         """Return list from dynamic list constructor."""
         if self._dynamic_list_constructor:
