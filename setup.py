@@ -7,80 +7,110 @@
 # it under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
+"""Flask-Menu is a Flask extension that adds support for generating menus."""
+
 import os
-import re
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
+
+readme = open('README.rst').read()
+history = open('CHANGES.rst').read()
+
+tests_require = [
+    'flask-classy>=0.6.10',
+    'check-manifest>=0.25',
+    'coverage>=4.0',
+    'isort>=4.2.2',
+    'pep257>=0.7.0',
+    'pytest>=2.8.0',
+    'pytest-cache>=1.0',
+    'pytest-cov>=2.1.0',
+    'pytest-pep8>=1.0.6',
+]
+
+extras_require = {
+    'docs': [
+        'sphinx>=1.3',
+    ],
+    'classy': [
+        'flask-classy>=0.6.10',
+    ],
+    'tests': tests_require,
+}
+
+install_requires = [
+    'Flask>=0.10.1',
+    'six>=1.7.2',
+]
+
+extras_require['all'] = []
+for reqs in extras_require.values():
+    extras_require['all'].extend(reqs)
+
+setup_requires = []
+
+packages = find_packages()
 
 
 class PyTest(TestCommand):
 
+    """PyTest Test."""
+
     user_options = [('pytest-args=', 'a', 'Arguments to pass to py.test')]
 
     def initialize_options(self):
+        """Init pytest."""
         TestCommand.initialize_options(self)
+        self.pytest_args = []
         try:
             from ConfigParser import ConfigParser
         except ImportError:
             from configparser import ConfigParser
         config = ConfigParser()
-        config.read("pytest.ini")
-        self.pytest_args = config.get("pytest", "addopts").split(" ")
+        config.read('pytest.ini')
+        self.pytest_args = config.get('pytest', 'addopts').split(' ')
 
     def finalize_options(self):
+        """Finalize pytest."""
         TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
+        if hasattr(self, '_test_args'):
+            self.test_suite = ''
+        else:
+            self.test_args = []
+            self.test_suite = True
 
     def run_tests(self):
+        """Run tests."""
         # import here, cause outside the eggs aren't loaded
         import pytest
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
 
 # Get the version string. Cannot be done with import!
-with open(os.path.join('flask_menu', 'version.py'), 'rt') as f:
-    version = re.search(
-        '__version__\s*=\s*"(?P<version>.*)"\n',
-        f.read()
-    ).group('version')
-
-tests_require = [
-    'pytest-cache>=1.0',
-    'pytest-cov>=2.1.0',
-    'pytest-pep8>=1.0.6',
-    'pytest>=2.8.0',
-    'coverage>=4.0.0',
-    'flask-classy>=0.6.10',
-]
+g = {}
+with open(os.path.join('flask_menu', 'version.py'), 'rt') as fp:
+    exec(fp.read(), g)
+    version = g['__version__']
 
 setup(
     name='Flask-Menu',
     version=version,
-    url='https://github.com/inveniosoftware/flask-menu',
+    description=__doc__,
+    long_description=readme + '\n\n' + history,
     license='BSD',
     author='Invenio collaboration',
     author_email='info@invenio-software.org',
-    description='Flask-Menu is a Flask extension that adds support '
-        'for generating menus.',
-    long_description=open('README.rst').read(),
-    packages=['flask_menu'],
+    url='https://github.com/inveniosoftware/flask-menu',
+    packages=packages,
     zip_safe=False,
     include_package_data=True,
     platforms='any',
-    install_requires=[
-        'Flask',
-        'six',
-    ],
-    extras_require={
-        'docs': ['sphinx'],
-        'classy': ['flask-classy>=0.6.10'],
-        'tests': tests_require,
-    },
+    extras_require=extras_require,
+    install_requires=install_requires,
+    setup_requires=setup_requires,
     tests_require=tests_require,
-    cmdclass={'test': PyTest},
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -91,11 +121,12 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Development Status :: 5 - Production/Stable'
     ],
+    cmdclass={'test': PyTest},
 )

@@ -57,7 +57,7 @@ Flask-Menu has the following dependencies:
 * `Flask <https://pypi.python.org/pypi/Flask>`_
 * `six <https://pypi.python.org/pypi/six>`_
 
-Flask-Menu requires Python version 2.6, 2.7 or 3.3+.
+Flask-Menu requires Python version 2.7 or 3.3+.
 
 
 .. _usage:
@@ -293,7 +293,7 @@ Flask-Classy
 .. autofunction:: classy_menu_item
 
 
-.. include:: ../CHANGES
+.. include:: ../CHANGES.rst
 
 .. include:: ../CONTRIBUTING.rst
 
@@ -302,4 +302,4 @@ License
 
 .. include:: ../LICENSE
 
-.. include:: ../AUTHORS
+.. include:: ../AUTHORS.rst

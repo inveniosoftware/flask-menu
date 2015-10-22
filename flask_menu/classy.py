@@ -9,9 +9,11 @@
 
 """Add support for Flask-Classy."""
 
-from flask import Blueprint
-from flask_menu import current_menu
 import inspect
+
+from flask import Blueprint
+
+from flask_menu import current_menu
 
 
 def register_flaskview(app, classy_view):

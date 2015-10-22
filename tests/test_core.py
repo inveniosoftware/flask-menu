@@ -8,23 +8,16 @@
 # more details.
 
 import sys
-
-from unittest import TestCase
+from unittest import TestCase, skipIf
 
 from flask import Blueprint, Flask, request, url_for
 
-from flask_menu import (
-    Menu,
-    current_menu,
-    register_menu,
-)
-from flask_menu.classy import (
-    register_flaskview,
-    classy_menu_item,
-)
+from flask_menu import Menu, current_menu, register_menu
+from flask_menu.classy import classy_menu_item, register_flaskview
 
 
 class FlaskTestCase(TestCase):
+
     """
     Mix-in class for creating the Flask application
     """
@@ -101,36 +94,36 @@ class TestMenu(FlaskTestCase):
             assert item_1 == current_menu.submenu('level2').children[0]
             assert item_2 == current_menu.submenu('level2').children[1]
 
-    # The following test is known to fail on Python 3.4.0 and 3.4.1
-    # while it works well on lesser or higher Pythons.  (Additionally
-    # cannot use unittest.skipIf() here due to Python-2.6.)
-    if sys.version_info != (3, 4, 0, 'final', 0) and \
-       sys.version_info != (3, 4, 1, 'final', 0):
-        def test_blueprint(self):
-            Menu(self.app)
-            blueprint = Blueprint('foo', 'foo', url_prefix="/foo")
+    @skipIf(sys.version_info == (3, 4, 0, 'final', 0) or
+            sys.version_info == (3, 4, 1, 'final', 0),
+            'This test is known to fail on Python 3.4.0 and 3.4.1'
+            'but works on earlier and later versions.')
+    def test_blueprint(self):
+        Menu(self.app)
+        blueprint = Blueprint('foo', 'foo', url_prefix="/foo")
 
-            @self.app.route('/test')
-            @register_menu(self.app, '.', 'Test')
-            def test():
-                return 'test'
+        @self.app.route('/test')
+        @register_menu(self.app, '.', 'Test')
+        def test():
+            return 'test'
 
-            @blueprint.route('/bar')
-            @register_menu(blueprint, 'bar', 'Foo Bar')
-            def bar():
-                return 'bar'
+        @blueprint.route('/bar')
+        @register_menu(blueprint, 'bar', 'Foo Bar')
+        def bar():
+            return 'bar'
 
-            self.app.register_blueprint(blueprint)
+        self.app.register_blueprint(blueprint)
 
-            with self.app.test_client() as c:
-                c.get('/test')
-                assert request.endpoint == 'test'
-                assert current_menu.text == 'Test'
+        with self.app.test_client() as c:
+            c.get('/test')
+            assert request.endpoint == 'test'
+            assert current_menu.text == 'Test'
 
-            with self.app.test_client() as c:
-                c.get('/foo/bar')
-                self.assertEqual(current_menu.submenu('bar').text, 'Foo Bar')
-                self.assertTrue(current_menu.submenu('bar').active)
+        with self.app.test_client() as c:
+            c.get('/foo/bar')
+            self.assertEqual(
+                current_menu.submenu('bar').text, 'Foo Bar')
+            self.assertTrue(current_menu.submenu('bar').active)
 
     def test_visible_when(self):
         Menu(self.app)
@@ -320,7 +313,7 @@ class TestMenu(FlaskTestCase):
                        endpoint_arguments_constructor=lambda: {
                            'id': request.view_args['id'],
                            'name': request.view_args['name'],
-                           })
+                       })
         def test(id, name):
             return str(id) + ':' + name
 
