@@ -37,9 +37,6 @@ class PyTest(TestCommand):
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
         import pytest
-        import _pytest.config
-        pm = _pytest.config.get_plugin_manager()
-        pm.consider_setuptools_entrypoints()
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
 
@@ -52,10 +49,10 @@ with open(os.path.join('flask_menu', 'version.py'), 'rt') as f:
 
 tests_require = [
     'pytest-cache>=1.0',
-    'pytest-cov>=1.8.0',
+    'pytest-cov>=2.1.0',
     'pytest-pep8>=1.0.6',
-    'pytest>=2.6.1',
-    'coverage<4.0a1',
+    'pytest>=2.8.0',
+    'coverage>=4.0.0',
     'flask-classy>=0.6.10',
 ]
 
@@ -80,6 +77,7 @@ setup(
     extras_require={
         'docs': ['sphinx'],
         'classy': ['flask-classy>=0.6.10'],
+        'tests': tests_require,
     },
     tests_require=tests_require,
     cmdclass={'test': PyTest},

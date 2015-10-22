@@ -33,7 +33,6 @@ def CONDITION_FALSE(*args, **kwargs):
 
 
 class Menu(object):
-
     """Flask extension implementation."""
 
     def __init__(self, app=None):
@@ -67,7 +66,6 @@ class Menu(object):
 
 
 class MenuEntryMixin(object):
-
     """Represent a entry node in the menu tree.
 
     Provides information for displaying links (text, url, visible, active).
