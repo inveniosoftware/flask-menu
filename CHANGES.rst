@@ -1,6 +1,18 @@
 Changes
 =======
 
+Version 0.5.0 (released 2015-10-30)
+
+- Drops support for Python 2.6.
+- Adds new property to MenuEntryMixin which allows the user to retrieve the
+  current active item from the MenuEntryMixin's tree. (#43)
+- Modifies project structure to be in line with other newer Invenio project
+  packages. This includes renaming files to match with files in other projects,
+  revising structures of certain files and adding more tools for testing. (#42)
+- Fixes incompatibility with pytest>=2.8.0 which removed the method
+  consider_setuptools_entrypoints(). (#41)
+- Updates to the new standard greeting phrase
+
 Version 0.4.0 (released 2015-07-23)
 
 - Flask-Classy support and automatic detection of parameters for
