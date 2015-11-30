@@ -220,7 +220,7 @@ Using Flask-Menu with Flask-Classy is rather simple:
 .. code-block:: python
 
     from flask_classy import FlaskView
-    from flask_menu import classy_menu_item
+    from flask_menu.classy import classy_menu_item
 
     class MyEndpoint(FlaskView):
         route_base = '/'
@@ -242,7 +242,7 @@ You do have to register the entire class with flask-menu at runtime however.
 
     from MyEndpoint import MyEndpoint
     from flask import Blueprint
-    from flask_menu import register_flaskview
+    from flask_menu.classy import register_flaskview
 
     bp = Blueprint('bp', __name__)
 
