@@ -15,3 +15,4 @@ Contact us at `info@invenio-software.org <mailto:info@invenio-software.org>`_
 * Marco Neumann <marco@crepererum.net>
 * Nick Whyte <nick@nickwhyte.com>
 * Sami Hiltunen <sami.mikael.hiltunen@cern.ch>
+* Sylvain Boily <sboily@proformatique.com>
