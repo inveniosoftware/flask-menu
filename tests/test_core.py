@@ -273,8 +273,12 @@ class TestMenu(FlaskTestCase):
             return 'never'
 
         @self.app.route('/normal')
-        @register_menu(self.app, 'normal', 'Normal')
-        def normal():
+        @self.app.route('/normal/<path:path>')
+        @register_menu(
+            self.app, 'normal', 'Normal',
+            active_when=lambda self: request.endpoint == self._endpoint
+        )
+        def normal(path=None):
             return 'normal'
 
         data = {
