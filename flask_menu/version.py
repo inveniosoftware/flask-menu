@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Flask-Menu
-# Copyright (C) 2013, 2014, 2015 CERN.
+# Copyright (C) 2013, 2014, 2015, 2016 CERN.
 #
 # Flask-Menu is free software; you can redistribute it and/or modify
 # it under the terms of the Revised BSD License; see LICENSE file for
@@ -16,4 +16,4 @@ This file is imported by ``flask_menu.__init__``, and parsed by
 # Do not change the format of this next line. Doing so risks breaking
 # setup.py and docs/conf.py
 
-__version__ = "0.5.1"
+__version__ = "0.5.2.dev20160104"
