@@ -1,8 +1,8 @@
-===============================
- Flask-Menu v0.5.0 is released
-===============================
+===================
+ Flask-Menu v0.5.1
+===================
 
-Flask-Menu v0.5.0 was released on October 30, 2015.
+Flask-Menu v0.5.1 was released on January 4, 2016.
 
 About
 -----
@@ -10,21 +10,15 @@ About
 Flask-Menu is a Flask extension that adds support for generating
 menus.
 
-Incompatible changes
-~~~~~~~~~~~~~~~~~~~~
+Improved features
+-----------------
 
-* Drops support for Python 2.6.
-
-New features
-~~~~~~~~~~~~
-
-* Adds new property to MenuEntryMixin which allows the user to retrieve the
-  current active item from the MenuEntryMixin's tree.
+- Improves tests for checking when an item is active.
 
 Installation
 ------------
 
-   $ pip install Flask-Menu==0.5.0
+   $ pip install Flask-Menu==0.5.1
 
 Documentation
 -------------

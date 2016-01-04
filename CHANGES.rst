@@ -1,7 +1,13 @@
 Changes
 =======
 
+Version 0.5.1 (released 2016-01-04)
+-----------------------------------
+
+- Improves tests for checking when an item is active.
+
 Version 0.5.0 (released 2015-10-30)
+-----------------------------------
 
 - Drops support for Python 2.6.
 - Adds new property to MenuEntryMixin which allows the user to retrieve the
@@ -14,6 +20,7 @@ Version 0.5.0 (released 2015-10-30)
 - Updates to the new standard greeting phrase
 
 Version 0.4.0 (released 2015-07-23)
+-----------------------------------
 
 - Flask-Classy support and automatic detection of parameters for
   `url_for`.  (#33)
@@ -23,6 +30,7 @@ Version 0.4.0 (released 2015-07-23)
   the test suite on the same host.  (#29)
 
 Version 0.3.0 (released 2015-03-17)
+-----------------------------------
 
 - New method `has_active_child(recursive=True)` in `MenuEntryMixin`.  (#25)
 - Fixed documentation of blueprint example. (#21)
@@ -30,6 +38,7 @@ Version 0.3.0 (released 2015-03-17)
 - Fixed template example and added code block types.  (#14)
 
 Version 0.2.0 (released 2014-11-04)
+-----------------------------------
 
 - The Flask-Menu extension is now released under more permissive
   Revised BSD License. (#12)
@@ -40,5 +49,6 @@ Version 0.2.0 (released 2014-11-04)
 - Documentation improvements. (#3)
 
 Version 0.1.0 (released 2014-06-27)
+-----------------------------------
 
 - Initial public release.
