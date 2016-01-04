@@ -11,5 +11,10 @@ include LICENSE AUTHORS.rst CHANGES.rst Dockerfile *.rst *.yml .editorconfig
 include .coveragerc .dockerignore .gitmodules run-tests.sh pytest.ini tox.ini
 include docs/*.rst docs/*.py docs/Makefile
 recursive-include docs/_templates *.html
+recursive-include docs/_themes LICENSE README
+recursive-include docs/_themes *.conf
+recursive-include docs/_themes *.css_t
+recursive-include docs/_themes *.html
+recursive-include docs/_themes *.py
 recursive-include examples *.py
 recursive-include tests *.py
