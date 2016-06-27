@@ -7,7 +7,7 @@
 # it under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-pep257 flask_menu && \
+pydocstyle flask_menu && \
 isort -c -c -df **/*.py && \
 check-manifest --ignore ".travis-*" --ignore docs/_themes && \
 sphinx-build -qnNW docs docs/_build/html && \

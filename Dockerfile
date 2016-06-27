@@ -14,7 +14,7 @@ FROM python:2.7
 # from the docker build cache:
 RUN pip install 'coverage<4.0a1' \
                 flask \
-                pep257 \
+                pydocstyle \
                 pytest \
                 pytest-cov \
                 pytest-pep8 \
