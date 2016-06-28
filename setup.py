@@ -101,7 +101,7 @@ setup(
     long_description=readme + '\n\n' + history,
     license='BSD',
     author='Invenio collaboration',
-    author_email='info@invenio-software.org',
+    author_email='info@inveniosoftware.org',
     url='https://github.com/inveniosoftware/flask-menu',
     packages=packages,
     zip_safe=False,
