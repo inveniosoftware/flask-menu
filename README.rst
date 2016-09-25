@@ -24,7 +24,8 @@ Flask-Menu is on PyPI so all you need is: ::
 
 Documentation
 =============
-Documentation is readable at http://flask-menu.readthedocs.org or can be build using Sphinx: ::
+Documentation is readable at https://flask-menu.readthedocs.io/ or can be
+build using Sphinx: ::
 
     git submodule init
     git submodule update
