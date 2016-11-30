@@ -80,6 +80,7 @@ class MenuEntryMixin(object):
         self._endpoint = None
         self._text = None
         self._order = 0
+        self._external_url = None
         self._endpoint_arguments_constructor = None
         self._dynamic_list_constructor = None
         self._visible_when = CONDITION_TRUE
@@ -93,17 +94,25 @@ class MenuEntryMixin(object):
         matching_completpath = request.path == self.url
         return matching_endpoint or matching_subpath or matching_completpath
 
-    def register(self, endpoint, text, order=0,
+    def register(self, endpoint=None, text=None, order=0, external_url=None,
                  endpoint_arguments_constructor=None,
                  dynamic_list_constructor=None,
                  active_when=None,
                  visible_when=None,
                  expected_args=None,
                  **kwargs):
-        """Assign endpoint and display values."""
+        """Assign endpoint and display values.
+
+        .. versionadded:: 0.6.0
+           The *external_url* parameter is mutually exclusive with *endpoint*.
+        """
+        if endpoint is not None and external_url is not None:
+            raise TypeError('Exclusive arguments endpoint and external_url.')
+
         self._endpoint = endpoint
-        self._text = text
+        self._text = text or self.name
         self._order = order
+        self._external_url = external_url
         self._expected_args = expected_args or []
         self._endpoint_arguments_constructor = endpoint_arguments_constructor
         self._dynamic_list_constructor = dynamic_list_constructor
@@ -237,7 +246,7 @@ class MenuEntryMixin(object):
     def url(self):
         """Generate url from given endpoint and optional dynamic arguments."""
         if not self._endpoint:
-            return '#'
+            return self._external_url or '#'
 
         if self._endpoint_arguments_constructor:
             return url_for(self._endpoint,

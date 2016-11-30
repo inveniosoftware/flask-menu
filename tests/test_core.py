@@ -394,6 +394,22 @@ class TestMenu(FlaskTestCase):
         with self.app.test_client() as c:
             self.assertRaises(RuntimeError, c.get, '/test')
 
+    def test_external_url(self):
+        """Test that external_url works, and is not overriding endpoint."""
+        Menu(self.app)
+        menu = self.app.extensions['menu']
+
+        url = 'https://python.org'
+
+        item1 = menu.submenu('menuitem1')
+
+        # Do not allow endpoint and external_url at the same time.
+        self.assertRaises(TypeError, item1.register, endpoint='test',
+                          text='Test', external_url=url)
+
+        item1.register(text='Test', external_url=url)
+        assert menu.submenu('menuitem1').url == url
+
     def test_double_instantiation(self):
         Menu(self.app)
         self.assertRaises(RuntimeError, Menu, self.app)
