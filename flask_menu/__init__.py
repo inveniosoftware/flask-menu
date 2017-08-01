@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Flask-Menu
-# Copyright (C) 2013, 2014, 2015 CERN.
+# Copyright (C) 2013, 2014, 2015, 2017 CERN.
 #
 # Flask-Menu is free software; you can redistribute it and/or modify
 # it under the terms of the Revised BSD License; see LICENSE file for
@@ -16,6 +16,7 @@ import inspect
 import types
 
 from flask import Blueprint, current_app, request, url_for, g
+from six import PY3
 
 from werkzeug.local import LocalProxy
 
@@ -117,7 +118,9 @@ class MenuEntryMixin(object):
         self._endpoint_arguments_constructor = endpoint_arguments_constructor
         self._dynamic_list_constructor = dynamic_list_constructor
         if active_when is not None:
-            if len(inspect.getargspec(active_when)[0]) == 1:
+            active_when_param = inspect.getfullargspec(active_when)[0] \
+                if PY3 else inspect.getargspec(active_when)[0]
+            if len(active_when_param) == 1:
                 self._active_when = types.MethodType(active_when, self)
             else:
                 self._active_when = active_when
@@ -347,7 +350,8 @@ def register_menu(app, path, text, order=0,
             endpoint = f.__name__
             before_first_request = app.before_first_request
 
-        expected = inspect.getargspec(f).args
+        expected = inspect.getfullargspec(f).args if PY3 else \
+            inspect.getargspec(f).args
 
         @before_first_request
         def _register_menu_item():
