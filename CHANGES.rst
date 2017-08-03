@@ -1,6 +1,14 @@
 Changes
 =======
 
+Version 0.6.0 (released 2017-08-03)
+-----------------------------------
+
+- Fixes Python 3 deprecation warnings.
+- Adds the `external_url` parameter to MenuEntryMixin's `register`
+  function, allowing menu items with external urls not tied to
+  an endpoint.
+
 Version 0.5.1 (released 2016-01-04)
 -----------------------------------
 

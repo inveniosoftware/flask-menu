@@ -1,8 +1,8 @@
 ===================
- Flask-Menu v0.5.1
+ Flask-Menu v0.6.0
 ===================
 
-Flask-Menu v0.5.1 was released on January 4, 2016.
+Flask-Menu v0.6.0 was released on August 3, 2017.
 
 About
 -----
@@ -18,7 +18,7 @@ Improved features
 Installation
 ------------
 
-   $ pip install Flask-Menu==0.5.1
+   $ pip install Flask-Menu==0.6.0
 
 Documentation
 -------------
