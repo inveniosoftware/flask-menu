@@ -2,6 +2,7 @@
 #
 # This file is part of Flask-Menu
 # Copyright (C) 2013, 2014, 2015 CERN.
+# Copyright (C) 2017 Marlin Forbes
 #
 # Flask-Menu is free software; you can redistribute it and/or modify
 # it under the terms of the Revised BSD License; see LICENSE file for
@@ -785,3 +786,20 @@ class TestMenu(FlaskTestCase):
                             visible_should
                         )
                     )
+
+    def test_active_checks_segment_not_prefix(self):
+        Menu(self.app)
+
+        @register_menu(self.app, 'object', 'Object')
+        @self.app.route('/object')
+        def object():
+            return 'object'
+
+        @register_menu(self.app, 'objects', 'Objects')
+        @self.app.route('/objects')
+        def objects():
+            return 'objects'
+
+        with self.app.test_client() as c:
+            c.get('/objects')
+            assert current_menu.submenu('object').active is not True

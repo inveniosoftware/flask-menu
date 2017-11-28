@@ -16,3 +16,4 @@ Contact us at `info@inveniosoftware.org <mailto:info@inveniosoftware.org>`_
 * Nick Whyte <nick@nickwhyte.com>
 * Sami Hiltunen <sami.mikael.hiltunen@cern.ch>
 * Sylvain Boily <sboily@proformatique.com>
+* Marlin Forbes <marlinf@datashaman.com>

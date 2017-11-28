@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Flask-Menu
-# Copyright (C) 2013, 2014, 2015, 2017 CERN.
+# Copyright (C) 2013, 2014, 2015, 2017 CERN
+# Copyright (C) 2017 Marlin Forbes
 #
 # Flask-Menu is free software; you can redistribute it and/or modify
 # it under the terms of the Revised BSD License; see LICENSE file for
@@ -90,10 +91,23 @@ class MenuEntryMixin(object):
     def _active_when(self):
         """Define condition when a menu entry is active."""
         matching_endpoint = request.endpoint == self._endpoint
-        matching_subpath = len(self.url) > 1 \
-            and request.path.startswith(self.url)
+
+        def segments(path):
+            """Split a path into segments."""
+            parts = path.split('/')[1:]
+            if len(parts) > 0 and parts[-1] == '':
+                parts.pop()
+            return parts
+
+        if len(self.url) > 1:
+            segments_url = segments(self.url)
+            segments_request = segments(request.path)
+            matching_segments = \
+                segments_request[0:len(segments_url)] == segments_url
+        else:
+            matching_segments = False
         matching_completpath = request.path == self.url
-        return matching_endpoint or matching_subpath or matching_completpath
+        return matching_endpoint or matching_segments or matching_completpath
 
     def register(self, endpoint=None, text=None, order=0, external_url=None,
                  endpoint_arguments_constructor=None,
