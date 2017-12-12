@@ -1,6 +1,14 @@
 Changes
 =======
 
+Version 0.7.0 (released 2017-12-12)
+-----------------------------------
+
+-  Uses whole segment of the URL instead of a prefix to determine active menu
+   item. Currently the menu item is marked as active when there is a prefix
+   match on the URL. This creates situations where multiple different menu
+   items appear to be active just because they share a prefix. (#62)
+
 Version 0.6.0 (released 2017-08-03)
 -----------------------------------
 
