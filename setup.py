@@ -42,7 +42,7 @@ extras_require = {
 
 install_requires = [
     'Flask>=0.10.1',
-    'six>=1.7.2',
+    'six>=1.9.0',
 ]
 
 extras_require['all'] = []
