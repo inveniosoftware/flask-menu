@@ -227,13 +227,13 @@ class MenuEntryMixin(object):
         active child if there is one. If there are no active menu items,
         None will be returned.
         """
-        if self.active:
-            return self
-
         for child in self.children:
             active = child.active_item
             if active is not None:
                 return active
+
+        if self.active:
+            return self
 
         return None
 
