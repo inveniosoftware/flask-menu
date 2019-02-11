@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 0.7.1 (released 2019-02-11)
+-----------------------------------
+
+- Fixes problem with returning an active menu item.
+
 Version 0.7.0 (released 2017-12-12)
 -----------------------------------
 
