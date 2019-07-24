@@ -16,9 +16,8 @@ Those menus can be then displayed using templates.
 import inspect
 import types
 
-from flask import Blueprint, current_app, request, url_for, g
+from flask import Blueprint, current_app, g, request, url_for
 from six import PY3
-
 from werkzeug.local import LocalProxy
 
 from .version import __version__
