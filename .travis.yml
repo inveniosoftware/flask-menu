@@ -22,8 +22,13 @@ env:
   - REQUIREMENTS=release
 
 python:
-  - "2.7"
-  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+
+matrix:
+  allow_failures:
+    - python: 3.8
 
 before_install:
   - "travis_retry pip install --upgrade pip setuptools py"
