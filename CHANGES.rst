@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 0.7.2 (released 2020-05-07)
+-----------------------------------
+
+- Deprecated Python versions lower than 3.6.0. Now supporting 3.6.0 and 3.7.0.
+
 Version 0.7.1 (released 2019-02-11)
 -----------------------------------
 
