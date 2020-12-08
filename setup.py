@@ -20,19 +20,12 @@ history = open('CHANGES.rst').read()
 
 tests_require = [
     'flask-classy>=0.6.10',
-    'check-manifest>=0.25',
-    'coverage>=4.0',
-    'isort>=4.2.2',
-    'pydocstyle>=1.0.0',
-    'pytest>=2.8.0',
-    'pytest-cache>=1.0',
-    'pytest-cov>=2.1.0',
-    'pytest-pep8>=1.0.6',
+    'pytest-invenio>=1.4.0',
 ]
 
 extras_require = {
     'docs': [
-        'sphinx>=1.3',
+        'sphinx>=3',
     ],
     'classy': [
         'flask-classy>=0.6.10',
@@ -123,6 +116,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Development Status :: 5 - Production/Stable'
     ],
     cmdclass={'test': PyTest},

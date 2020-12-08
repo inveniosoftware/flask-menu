@@ -2,8 +2,8 @@
  Flask-Menu
 ============
 
-.. image:: https://travis-ci.org/inveniosoftware/flask-menu.png?branch=master
-    :target: https://travis-ci.org/inveniosoftware/flask-menu
+.. image:: https://github.com/inveniosoftware/flask-menu/workflows/CI/badge.svg
+    :target: https://github.com/inveniosoftware/flask-menu/actions
 .. image:: https://coveralls.io/repos/inveniosoftware/flask-menu/badge.png?branch=master
     :target: https://coveralls.io/r/inveniosoftware/flask-menu
 .. image:: https://pypip.in/v/Flask-Menu/badge.png

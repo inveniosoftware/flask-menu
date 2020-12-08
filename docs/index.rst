@@ -6,9 +6,9 @@
 .. raw:: html
 
     <p style="height:22px; margin:0 0 0 2em; float:right">
-        <a href="https://travis-ci.org/inveniosoftware/flask-menu">
-            <img src="https://travis-ci.org/inveniosoftware/flask-menu.png?branch=master"
-                 alt="travis-ci badge"/>
+        <a href="https://github.com/inveniosoftware/flask-menu/actions">
+            <img src="https://github.com/inveniosoftware/flask-menu/workflows/CI/badge.svg"
+                 alt="github-ci badge"/>
         </a>
         <a href="https://coveralls.io/r/inveniosoftware/flask-menu">
             <img src="https://coveralls.io/repos/inveniosoftware/flask-menu/badge.png?branch=master"
