@@ -110,4 +110,5 @@ def classy_menu_item(path, text, **kwargs):
 
     return func_wrap
 
+
 __all__ = ('register_flaskview', 'classy_menu_item')
