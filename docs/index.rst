@@ -249,6 +249,28 @@ You do have to register the entire class with flask-menu at runtime however.
     MyEndpoint.register(bp)
     register_flaskview(bp, MyEndpoint)
 
+.. _custom_parametters:
+
+Custom Parameters
+=================
+
+If you want to register a menu option with a custom url parameter (for example, for
+url's that have an optional parameter) you can use the `endpoint_arguments_constructor`
+to achieve this.
+
+Here is an example:
+
+.. code-block:: python
+
+    @bp_account.route('/list', defaults={'disabled': False})
+    @bp_account.route('/list/<disabled>')
+    @register_menu(bp_social, '.account.list', 'Social networks')
+    @register_menu(bp_social, '.account.list', 'Social networks (Disabled)', endpoint_arguments_constructor=lambda: {'disabled': True})
+    def list(disabled):
+        pass
+
+This will register the same menu but with an optional URL parametter set to True.
+
 .. _api:
 
 API
