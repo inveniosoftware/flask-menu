@@ -277,7 +277,10 @@ class MenuEntryMixin(object):
                 if key in self._expected_args:
                     args[key] = g._menu_kwargs[key]
 
-        return url_for(self._endpoint, **args)
+        # url for endpoint with matching number of expected_args
+        if len(args) == len(self._expected_args):
+            return url_for(self._endpoint, **args)
+        return ''
 
     @property
     def active(self):
@@ -381,6 +384,10 @@ def register_menu(app, path, text, order=0,
                 visible_when=visible_when,
                 expected_args=expected,
                 **kwargs)
+            
+            # store path for breadcrumb functionality
+            item.path = path
+
         return f
 
     return menu_decorator

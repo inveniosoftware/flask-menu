@@ -17,3 +17,4 @@ Contact us at `info@inveniosoftware.org <mailto:info@inveniosoftware.org>`_
 * Sami Hiltunen <sami.mikael.hiltunen@cern.ch>
 * Sylvain Boily <sboily@proformatique.com>
 * Marlin Forbes <marlinf@datashaman.com>
+* Grzegorz Gyczew <ggyczew@gmail.com>
