@@ -78,10 +78,10 @@ Here is a simple Flask-Menu usage example:
 
     from flask import Flask
     from flask import render_template_string
-    from flask_menu import Menu, register_menu
+    from flask_menu import FlaskMenu, register_menu
 
     app = Flask(__name__)
-    Menu(app=app)
+    FlaskMenu(app=app)
 
     def tmpl_show_menu():
         return render_template_string(
@@ -211,9 +211,9 @@ with 3 items while processing a request for `/social/list`.
 Flask-Classy
 ============
 
-Flask-Classy is a library commonly used in Flask development and gives 
+Flask-Classy is a library commonly used in Flask development and gives
 additional structure to apps which already make use of blueprints as
-well as apps which do not use blueprints. 
+well as apps which do not use blueprints.
 
 Using Flask-Menu with Flask-Classy is rather simple:
 
@@ -231,8 +231,8 @@ Using Flask-Menu with Flask-Classy is rather simple:
             pass
 
 
-Instead of using the `@menu.register_menu` decorator, we use classy_menu_item. 
-All usage is otherwise the same to `register_menu`, however you do not need 
+Instead of using the `@menu.register_menu` decorator, we use classy_menu_item.
+All usage is otherwise the same to `register_menu`, however you do not need
 to provide reference to the blueprint/app.
 
 You do have to register the entire class with flask-menu at runtime however.
@@ -262,10 +262,7 @@ Flask extension
 
 .. module:: flask_menu
 
-.. autoclass:: Menu
-   :members:
-
-.. autoclass:: MenuEntryMixin
+.. autoclass:: FlaskMenu
    :members:
 
 

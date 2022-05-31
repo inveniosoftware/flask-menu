@@ -30,10 +30,10 @@ def register_flaskview(app, classy_view):
         menu items for.
     """
     if isinstance(app, Blueprint):
-        endpoint_prefix = app.name + '.'
+        endpoint_prefix = app.name + "."
         before_first_request = app.before_app_first_request
     else:
-        endpoint_prefix = ''
+        endpoint_prefix = ""
         before_first_request = app.before_first_request
 
     @before_first_request
@@ -41,19 +41,14 @@ def register_flaskview(app, classy_view):
         for meth_str in dir(classy_view):
             meth = getattr(classy_view, meth_str)
 
-            if hasattr(meth, '_menu_items'):
+            if hasattr(meth, "_menu_items"):
                 for menu_item in meth._menu_items:
                     endpoint = "{0}{1}:{2}".format(
-                        endpoint_prefix,
-                        classy_view.__name__,
-                        meth.__name__
+                        endpoint_prefix, classy_view.__name__, meth.__name__
                     )
-                    path = menu_item.pop('path')
+                    path = menu_item.pop("path")
                     item = current_menu.submenu(path)
-                    item.register(
-                        endpoint,
-                        **menu_item
-                    )
+                    item.register(endpoint, **menu_item)
 
 
 def classy_menu_item(path, text, **kwargs):
@@ -90,18 +85,19 @@ def classy_menu_item(path, text, **kwargs):
         will not be directly affect the menu system, but allows
         other systems to use it while rendering.
     :param kwargs: Additional arguments will be available as attributes
-        on registered :class:`flask_menu.MenuEntryMixin` instance.
+        on registered :class:`flask_menu.FlaskMenu` instance.
 
     .. versionchanged:: 0.2.0
        The *kwargs* arguments.
     """
+
     def func_wrap(f):
-        expected = inspect.getargspec(f).args
-        if 'self' in expected:
-            expected.remove('self')
+        expected = inspect.getfullargspec(f).args
+        if "self" in expected:
+            expected.remove("self")
         item = dict(path=path, text=text, expected_args=expected, **kwargs)
 
-        if hasattr(f, '_menu_items'):
+        if hasattr(f, "_menu_items"):
             f._menu_items.append(item)
         else:
             f._menu_items = [item]
@@ -111,4 +107,4 @@ def classy_menu_item(path, text, **kwargs):
     return func_wrap
 
 
-__all__ = ('register_flaskview', 'classy_menu_item')
+__all__ = ("register_flaskview", "classy_menu_item")
