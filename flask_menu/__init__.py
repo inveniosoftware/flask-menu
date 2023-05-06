@@ -20,7 +20,6 @@ from flask import Blueprint, current_app, g, request, url_for
 from six import PY3
 from werkzeug.local import LocalProxy
 
-from .version import __version__
 
 
 def CONDITION_TRUE(*args, **kwargs):
@@ -388,5 +387,7 @@ def register_menu(app, path, text, order=0,
 
 #: Global object that is proxy to the current application menu.
 current_menu = LocalProxy(Menu.root)
+
+__version__ = "0.7.2"
 
 __all__ = ('current_menu', 'register_menu', 'Menu', '__version__')
