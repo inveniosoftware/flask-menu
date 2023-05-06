@@ -31,29 +31,30 @@ def tmpl_show_menu():
         {%- for item in current_menu.children %}
             {% if item.active %}*{% endif %}{{ item.text }}
         {% endfor -%}
-        """)
+        """
+    )
 
 
-@app.route('/')
-@menu.register_menu(app, '.', 'Home')
+@app.route("/")
+@menu.register_menu(app, ".", "Home")
 def index():
     """Home page."""
     return tmpl_show_menu()
 
 
-@app.route('/first')
-@menu.register_menu(app, '.first', 'First', order=0)
+@app.route("/first")
+@menu.register_menu(app, ".first", "First", order=0)
 def first():
     """First page."""
     return tmpl_show_menu()
 
 
-@app.route('/second')
-@menu.register_menu(app, '.second', 'Second', order=1)
+@app.route("/second")
+@menu.register_menu(app, ".second", "Second", order=1)
 def second():
     """Second page."""
     return tmpl_show_menu()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

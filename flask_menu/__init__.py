@@ -21,7 +21,6 @@ from six import PY3
 from werkzeug.local import LocalProxy
 
 
-
 def CONDITION_TRUE(*args, **kwargs):
     """Return always True."""
     return True
@@ -44,14 +43,13 @@ class Menu(object):
         """Initialize a Flask application."""
         self.app = app
         # Follow the Flask guidelines on usage of app.extensions
-        if not hasattr(app, 'extensions'):
+        if not hasattr(app, "extensions"):
             app.extensions = {}
-        if 'menu' in app.extensions:
+        if "menu" in app.extensions:
             raise RuntimeError("Flask application is already initialized.")
-        app.extensions['menu'] = MenuEntryMixin('', None)
+        app.extensions["menu"] = MenuEntryMixin("", None)
 
-        app.context_processor(lambda: dict(
-            current_menu=current_menu))
+        app.context_processor(lambda: dict(current_menu=current_menu))
 
         @app.url_value_preprocessor
         def url_preprocessor(route, args):
@@ -62,7 +60,7 @@ class Menu(object):
     @staticmethod
     def root():
         """Return a root entry of current application's menu."""
-        return current_app.extensions['menu']
+        return current_app.extensions["menu"]
 
 
 class MenuEntryMixin(object):
@@ -92,35 +90,40 @@ class MenuEntryMixin(object):
 
         def segments(path):
             """Split a path into segments."""
-            parts = path.split('/')[1:]
-            if len(parts) > 0 and parts[-1] == '':
+            parts = path.split("/")[1:]
+            if len(parts) > 0 and parts[-1] == "":
                 parts.pop()
             return parts
 
         if len(self.url) > 1:
             segments_url = segments(self.url)
             segments_request = segments(request.path)
-            matching_segments = \
-                segments_request[0:len(segments_url)] == segments_url
+            matching_segments = segments_request[0 : len(segments_url)] == segments_url
         else:
             matching_segments = False
         matching_completpath = request.path == self.url
         return matching_endpoint or matching_segments or matching_completpath
 
-    def register(self, endpoint=None, text=None, order=0, external_url=None,
-                 endpoint_arguments_constructor=None,
-                 dynamic_list_constructor=None,
-                 active_when=None,
-                 visible_when=None,
-                 expected_args=None,
-                 **kwargs):
+    def register(
+        self,
+        endpoint=None,
+        text=None,
+        order=0,
+        external_url=None,
+        endpoint_arguments_constructor=None,
+        dynamic_list_constructor=None,
+        active_when=None,
+        visible_when=None,
+        expected_args=None,
+        **kwargs
+    ):
         """Assign endpoint and display values.
 
         .. versionadded:: 0.6.0
            The *external_url* parameter is mutually exclusive with *endpoint*.
         """
         if endpoint is not None and external_url is not None:
-            raise TypeError('Exclusive arguments endpoint and external_url.')
+            raise TypeError("Exclusive arguments endpoint and external_url.")
 
         self._endpoint = endpoint
         self._text = text or self.name
@@ -130,8 +133,11 @@ class MenuEntryMixin(object):
         self._endpoint_arguments_constructor = endpoint_arguments_constructor
         self._dynamic_list_constructor = dynamic_list_constructor
         if active_when is not None:
-            active_when_param = inspect.getfullargspec(active_when)[0] \
-                if PY3 else inspect.getargspec(active_when)[0]
+            active_when_param = (
+                inspect.getfullargspec(active_when)[0]
+                if PY3
+                else inspect.getargspec(active_when)[0]
+            )
             if len(active_when_param) == 1:
                 self._active_when = types.MethodType(active_when, self)
             else:
@@ -141,8 +147,9 @@ class MenuEntryMixin(object):
 
         for key, value in kwargs.items():
             if hasattr(self, key):
-                raise RuntimeError('Can not override existing attribute '
-                                   '{0}.'.format(key))
+                raise RuntimeError(
+                    "Can not override existing attribute " "{0}.".format(key)
+                )
             setattr(self, key, value)
 
     def submenu(self, path, auto_create=True):
@@ -156,19 +163,20 @@ class MenuEntryMixin(object):
             to satisfy the given path.
         :return: Submenu placed at the given path in the hierarchy.
         """
-        if not path or path in ['.', '']:
+        if not path or path in [".", ""]:
             return self
 
-        (path_head, dot, path_tail) = path.partition('.')
+        (path_head, dot, path_tail) = path.partition(".")
 
-        if path_head == '':
+        if path_head == "":
             next_entry = self
         elif path_head not in self._child_entries:
             # Create the entry if it does not exist
             if auto_create:
                 # The entry was not found so create a new one
-                next_entry = self._child_entries[path_head] = \
-                    MenuEntryMixin(path_head, self)
+                next_entry = self._child_entries[path_head] = MenuEntryMixin(
+                    path_head, self
+                )
             else:
                 # The entry was not found, but we are forbidden to create
                 return None
@@ -200,8 +208,7 @@ class MenuEntryMixin(object):
             return None
 
         branch_list = [child_entry]
-        while (child_entry.parent is not None) \
-                and (child_entry != ancestor_entry):
+        while (child_entry.parent is not None) and (child_entry != ancestor_entry):
             child_entry = child_entry.parent
             branch_list.append(child_entry)
 
@@ -250,28 +257,28 @@ class MenuEntryMixin(object):
     @property
     def children(self):
         """Return list of sorted children."""
-        return sorted(self._child_entries.values(),
-                      key=lambda entry: getattr(entry, 'order', 0))
+        return sorted(
+            self._child_entries.values(), key=lambda entry: getattr(entry, "order", 0)
+        )
 
     @property
     def text(self):
-        return self._text or 'Menu item not initialised'
+        return self._text or "Menu item not initialised"
 
     @property
     def url(self):
         """Generate url from given endpoint and optional dynamic arguments."""
         if not self._endpoint:
-            return self._external_url or '#'
+            return self._external_url or "#"
 
         if self._endpoint_arguments_constructor:
-            return url_for(self._endpoint,
-                           **self._endpoint_arguments_constructor())
+            return url_for(self._endpoint, **self._endpoint_arguments_constructor())
 
         # Inject current args. Allows usage when inside a blueprint with a url
         # param.
         # Filter out any arguments which don't need to be passed.
         args = {}
-        if hasattr(g, '_menu_kwargs') and g._menu_kwargs:
+        if hasattr(g, "_menu_kwargs") and g._menu_kwargs:
             for key in g._menu_kwargs:
                 if key in self._expected_args:
                     args[key] = g._menu_kwargs[key]
@@ -314,12 +321,17 @@ class MenuEntryMixin(object):
         return False
 
 
-def register_menu(app, path, text, order=0,
-                  endpoint_arguments_constructor=None,
-                  dynamic_list_constructor=None,
-                  active_when=None,
-                  visible_when=None,
-                  **kwargs):
+def register_menu(
+    app,
+    path,
+    text,
+    order=0,
+    endpoint_arguments_constructor=None,
+    dynamic_list_constructor=None,
+    active_when=None,
+    visible_when=None,
+    **kwargs
+):
     """Decorate endpoints that should be displayed in a menu.
 
     Example::
@@ -353,17 +365,17 @@ def register_menu(app, path, text, order=0,
     .. versionchanged:: 0.2.0
        The *kwargs* arguments.
     """
+
     def menu_decorator(f):
         """Decorator of a view function that should be included in the menu."""
         if isinstance(app, Blueprint):
-            endpoint = app.name + '.' + f.__name__
+            endpoint = app.name + "." + f.__name__
             before_first_request = app.before_app_first_request
         else:
             endpoint = f.__name__
             before_first_request = app.before_first_request
 
-        expected = inspect.getfullargspec(f).args if PY3 else \
-            inspect.getargspec(f).args
+        expected = inspect.getfullargspec(f).args if PY3 else inspect.getargspec(f).args
 
         @before_first_request
         def _register_menu_item():
@@ -379,7 +391,9 @@ def register_menu(app, path, text, order=0,
                 active_when=active_when,
                 visible_when=visible_when,
                 expected_args=expected,
-                **kwargs)
+                **kwargs
+            )
+
         return f
 
     return menu_decorator
@@ -390,4 +404,4 @@ current_menu = LocalProxy(Menu.root)
 
 __version__ = "0.7.2"
 
-__all__ = ('current_menu', 'register_menu', 'Menu', '__version__')
+__all__ = ("current_menu", "register_menu", "Menu", "__version__")
