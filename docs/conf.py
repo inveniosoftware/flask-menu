@@ -8,8 +8,9 @@
 # more details.
 
 import os
-import re
 import sys
+
+from flask_menu import __version__
 
 sys.path.append(os.path.abspath("_themes"))
 

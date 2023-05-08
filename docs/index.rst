@@ -55,9 +55,8 @@ Requirements
 Flask-Menu has the following dependencies:
 
 * `Flask <https://pypi.python.org/pypi/Flask>`_
-* `six <https://pypi.python.org/pypi/six>`_
 
-Flask-Menu requires Python version 2.7 or 3.3+.
+Flask-Menu requires Python version 3.7
 
 
 .. _usage:
@@ -78,10 +77,16 @@ Here is a simple Flask-Menu usage example:
 
     from flask import Flask
     from flask import render_template_string
-    from flask_menu import Menu, register_menu
+    from flask_menu import FlaskMenu
 
     app = Flask(__name__)
-    Menu(app=app)
+    FlaskMenu(app=app)
+
+    def init(app):
+        menu = app.extensions["menu"]
+        menu.submenu(".").register("index", "Home")
+        menu.submenu(".first").register("first", "First")
+        menu.submenu(".second").register("second", "Second", order=1)
 
     def tmpl_show_menu():
         return render_template_string(
@@ -92,21 +97,19 @@ Here is a simple Flask-Menu usage example:
             """)
 
     @app.route('/')
-    @register_menu(app, '.', 'Home')
     def index():
         return tmpl_show_menu()
 
     @app.route('/first')
-    @register_menu(app, '.first', 'First', order=0)
     def first():
         return tmpl_show_menu()
 
     @app.route('/second')
-    @register_menu(app, '.second', 'Second', order=1)
     def second():
         return tmpl_show_menu()
 
     if __name__ == '__main__':
+        init(app)
         app.run(debug=True)
 
 If you save the above as ``app.py``, you can run the example
@@ -166,12 +169,12 @@ your view function, like this:
 .. code-block:: python
 
     from flask import Blueprint
-    from flask_menu import register_menu
+    from flask_menu import current_menu
 
     bp_account = Blueprint('account', __name__, url_prefix='/account')
+    current_menu.submenu(".account").register("account.index", "Your account")
 
     @bp_account.route('/')
-    @register_menu(bp_account, '.account', 'Your account')
     def index():
         pass
 
@@ -182,12 +185,13 @@ navigation to certain hierarchy.
 .. code-block:: python
 
     from flask import Blueprint
-    from flask_menu import register_menu
+    from flask_menu import current_menu
 
     bp_social = Blueprint('social', __name__, url_prefix='/social')
 
+    current_menu.submenu(".account.list").register("social.list", "Social networks")
+
     @bp_account.route('/list')
-    @register_menu(bp_social, '.account.list', 'Social networks')
     def list():
         pass
 
@@ -208,47 +212,6 @@ with 3 items while processing a request for `/social/list`.
     ...     current_menu.children
 
 
-Flask-Classy
-============
-
-Flask-Classy is a library commonly used in Flask development and gives 
-additional structure to apps which already make use of blueprints as
-well as apps which do not use blueprints. 
-
-Using Flask-Menu with Flask-Classy is rather simple:
-
-.. code-block:: python
-
-    from flask_classy import FlaskView
-    from flask_menu.classy import classy_menu_item
-
-    class MyEndpoint(FlaskView):
-        route_base = '/'
-
-        @classy_menu_item('frontend.account', 'Home', order=0)
-        def index(self):
-            # Do something.
-            pass
-
-
-Instead of using the `@menu.register_menu` decorator, we use classy_menu_item. 
-All usage is otherwise the same to `register_menu`, however you do not need 
-to provide reference to the blueprint/app.
-
-You do have to register the entire class with flask-menu at runtime however.
-
-.. code-block:: python
-
-
-    from MyEndpoint import MyEndpoint
-    from flask import Blueprint
-    from flask_menu.classy import register_flaskview
-
-    bp = Blueprint('bp', __name__)
-
-    MyEndpoint.register(bp)
-    register_flaskview(bp, MyEndpoint)
-
 .. _api:
 
 API
@@ -262,17 +225,11 @@ Flask extension
 
 .. module:: flask_menu
 
+.. autoclass:: FlaskMenu
+   :members:
+
 .. autoclass:: Menu
    :members:
-
-.. autoclass:: MenuEntryMixin
-   :members:
-
-
-Decorators
-^^^^^^^^^^
-
-.. autofunction:: register_menu
 
 
 Proxies
@@ -281,16 +238,6 @@ Proxies
 .. data:: current_menu
 
    Root of a menu item.
-
-
-Flask-Classy
-^^^^^^^^^^^^
-
-.. module:: flask_menu.classy
-
-.. autofunction:: register_flaskview
-
-.. autofunction:: classy_menu_item
 
 
 .. include:: ../CHANGES.rst

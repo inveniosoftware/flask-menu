@@ -9,15 +9,11 @@
 # it under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-"""This extension allows creation of menus organised in a tree structure.
+"""Proxies."""
 
-Those menus can be then displayed using templates.
-"""
+from werkzeug.local import LocalProxy
 
 from .ext import FlaskMenu
-from .ext import FlaskMenu as Menu
-from .proxies import current_menu
 
-__version__ = "0.7.2"
-
-__all__ = ("current_menu", "FlaskMenu", "Menu", "__version__")
+#: Global object that is proxy to the current application menu.
+current_menu = LocalProxy(FlaskMenu.root)
