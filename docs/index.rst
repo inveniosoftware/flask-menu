@@ -77,10 +77,10 @@ Here is a simple Flask-Menu usage example:
 
     from flask import Flask
     from flask import render_template_string
-    from flask_menu import FlaskMenu
+    from flask_menu import Menu
 
     app = Flask(__name__)
-    FlaskMenu(app=app)
+    Menu(app=app)
 
     def init(app):
         menu = app.extensions["menu"]
@@ -225,10 +225,10 @@ Flask extension
 
 .. module:: flask_menu
 
-.. autoclass:: FlaskMenu
+.. autoclass:: Menu
    :members:
 
-.. autoclass:: Menu
+.. autoclass:: MenuRoot
    :members:
 
 

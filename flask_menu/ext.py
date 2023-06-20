@@ -13,10 +13,10 @@
 
 from flask import current_app, g
 
-from .menu import Menu
+from .menu import MenuRoot
 
 
-class FlaskMenu:
+class Menu:
     """Flask extension implementation."""
 
     def __init__(self, app=None):
@@ -32,9 +32,9 @@ class FlaskMenu:
             app.extensions = {}
         if "menu" in app.extensions:
             raise RuntimeError("Flask application is already initialized.")
-        app.extensions["menu"] = Menu("", None)
+        app.extensions["menu"] = MenuRoot("", None)
 
-        app.context_processor(lambda: {"current_menu": FlaskMenu.root()})
+        app.context_processor(lambda: {"current_menu": Menu.root()})
 
         @app.url_value_preprocessor
         def url_preprocessor(route, args):

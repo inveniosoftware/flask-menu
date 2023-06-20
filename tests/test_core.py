@@ -14,7 +14,7 @@
 from flask import Blueprint, request, url_for
 from pytest import raises
 
-from flask_menu import FlaskMenu, current_menu
+from flask_menu import Menu, current_menu
 
 
 def test_simple_app(app):
@@ -382,7 +382,7 @@ def test_external_url(app):
 def test_double_instantiation(app):
     """Test double Instantiation."""
     with raises(RuntimeError):
-        FlaskMenu(app)
+        Menu(app)
 
 
 def test_dynamic_url_with_auto_args(app):
@@ -425,7 +425,7 @@ def test_dynamic_list_constructor(app):
 # NOTE: this test is with the new structure not that easy.
 def test_app_without_existing_extensions(app):
     del app.extensions
-    FlaskMenu(app)
+    Menu(app)
     assert len(app.extensions) == 1
 
 

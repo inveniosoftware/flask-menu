@@ -12,12 +12,12 @@
 import pytest
 from flask import Flask
 
-from flask_menu import FlaskMenu
+from flask_menu import Menu
 
 
 @pytest.fixture(scope="function")
 def app():
     """Doc example app."""
     app = Flask("test")
-    FlaskMenu(app)
+    Menu(app)
     return app

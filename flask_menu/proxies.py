@@ -13,7 +13,7 @@
 
 from werkzeug.local import LocalProxy
 
-from .ext import FlaskMenu
+from .ext import Menu
 
 #: Global object that is proxy to the current application menu.
-current_menu = LocalProxy(FlaskMenu.root)
+current_menu = LocalProxy(Menu.root)

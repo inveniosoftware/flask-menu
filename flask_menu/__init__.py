@@ -14,10 +14,10 @@
 Those menus can be then displayed using templates.
 """
 
-from .ext import FlaskMenu
-from .ext import FlaskMenu as Menu
+from .ext import Menu
+from .menu import MenuRoot
 from .proxies import current_menu
 
 __version__ = "0.7.2"
 
-__all__ = ("current_menu", "FlaskMenu", "Menu", "__version__")
+__all__ = ("current_menu", "Menu", "MenuRoot", "__version__")
