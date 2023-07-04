@@ -228,7 +228,7 @@ Flask extension
 .. autoclass:: Menu
    :members:
 
-.. autoclass:: MenuRoot
+.. autoclass:: MenuNode
    :members:
 
 

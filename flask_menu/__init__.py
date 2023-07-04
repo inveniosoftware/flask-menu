@@ -14,10 +14,11 @@
 Those menus can be then displayed using templates.
 """
 
+from .decorators import register_menu
 from .ext import Menu
-from .menu import MenuRoot
+from .menu import MenuNode
 from .proxies import current_menu
 
 __version__ = "0.7.2"
 
-__all__ = ("current_menu", "Menu", "MenuRoot", "__version__")
+__all__ = ("current_menu", "Menu", "MenuNode", "__version__", "register_menu")

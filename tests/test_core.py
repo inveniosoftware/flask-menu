@@ -14,12 +14,12 @@
 from flask import Blueprint, request, url_for
 from pytest import raises
 
-from flask_menu import Menu, current_menu
+from flask_menu import Menu, current_menu, register_menu
 
 
-def test_simple_app(app):
+def test_simple_app_menu(app):
     """Test simple app."""
-    menu = app.extensions["menu"]
+    menu = app.extensions["menu"].root()
 
     menu.submenu(".").register("test", "Test")
     menu.submenu(".level2").register("level2", "Level 2")
@@ -77,10 +77,69 @@ def test_simple_app(app):
         assert item_2 == current_menu.submenu("level2").children[1]
 
 
-def test_blueprint(app):
+def test_simple_app_register_menu(app):
+    """Test simple app."""
+
+    @app.route("/test")
+    @register_menu(app, ".", "Test")
+    def test():
+        return "test"
+
+    @app.route("/level2")
+    @register_menu(app, "level2", "Level 2")
+    def level2():
+        return "level2"
+
+    @app.route("/level3")
+    @register_menu(app, "level2.level3", "Level 3")
+    def level3():
+        return "level3"
+
+    @app.route("/level3B")
+    @register_menu(app, "level2.level3B", "Level 3B", order=1)
+    def level3B():
+        return "level3B"
+
+    with app.test_client() as c:
+        c.get("/test")
+        assert request.endpoint == "test"
+        assert current_menu.url == "/test"
+        assert current_menu.text == "Test"
+        assert current_menu.active
+        assert current_menu.submenu("level2").text == "Level 2"
+        assert not current_menu.submenu("level2").active
+        assert current_menu.submenu("missing", auto_create=False) is None
+        assert len(current_menu.list_path(".", ".level2.level3")) == 3
+        assert current_menu.list_path(".", "missing") is None
+        assert current_menu.list_path("missing", ".level2.level3") is None
+        assert current_menu.list_path("level2.level3B", "level2.level3") is None
+
+    with app.test_client() as c:
+        c.get("/level2")
+        assert current_menu.submenu("level2").active
+
+    with app.test_client() as c:
+        c.get("/level3")
+        assert current_menu.submenu(".level2.level3").active
+        assert current_menu.submenu("level2.level3").active
+
+        assert not current_menu.has_active_child(recursive=False)
+        assert current_menu.has_active_child()
+        assert current_menu.submenu("level2").has_active_child(recursive=False)
+        assert current_menu.submenu("level2").has_active_child()
+
+        item_1 = current_menu.submenu("level2.level3")
+        item_2 = current_menu.submenu("level2.level3B")
+        assert item_1.order < item_2.order
+        assert item_1 == current_menu.submenu("level2").children[0]
+        assert item_2 == current_menu.submenu("level2").children[1]
+
+
+def test_blueprint_menu(app):
     """Test Blueprint."""
     blueprint = Blueprint("foo", "foo", url_prefix="/foo")
-    menu = app.extensions["menu"]
+
+    menu = app.extensions["menu"].root()
 
     menu.submenu(".").register("foo.test", "Test")
     menu.submenu("bar").register("foo.bar", "Foo Bar")
@@ -106,23 +165,48 @@ def test_blueprint(app):
         assert current_menu.submenu("bar").active
 
 
+def test_blueprint_register_menu(app):
+    """Test Blueprint."""
+    blueprint = Blueprint("foo", "foo", url_prefix="/foo")
+
+    @app.route("/test")
+    @register_menu(blueprint, ".", "Test")
+    def test():
+        return "test"
+
+    @blueprint.route("/bar")
+    @register_menu(blueprint, "bar", "Foo Bar")
+    def bar():
+        return "bar"
+
+    app.register_blueprint(blueprint)
+
+    with app.test_client() as c:
+        c.get("/test")
+        assert request.endpoint == "test"
+        assert current_menu.text == "Test"
+
+    with app.test_client() as c:
+        c.get("/foo/bar")
+        assert current_menu.submenu("bar").text == "Foo Bar"
+        assert current_menu.submenu("bar").active
+
+
 def test_visible_when(app):
     """Test visible when."""
-    menu = app.extensions["menu"]
-
-    menu.submenu("always").register("always", "Always", visible_when=lambda: True)
-    menu.submenu("never").register("never", "Never", visible_when=lambda: False)
-    menu.submenu("normal").register("normal", "Normal")
 
     @app.route("/always")
+    @register_menu(app, "always", "Always", visible_when=lambda: True)
     def always():
         return "never"
 
     @app.route("/never")
+    @register_menu(app, "never", "Never", visible_when=lambda: False)
     def never():
         return "never"
 
     @app.route("/normal")
+    @register_menu(app, "normal", "Normal")
     def normal():
         return "normal"
 
@@ -154,21 +238,19 @@ def test_visible_when(app):
 
 def test_visible_when_with_dynamic(app):
     """Test visible when with dynamic."""
-    menu = app.extensions["menu"]
-
-    menu.submenu("always").register("always", "Always", visible_when=lambda: True)
-    menu.submenu("never").register("never", "Never", visible_when=lambda: False)
-    menu.submenu("normal").register("normal", "Normal")
 
     @app.route("/always")
+    @register_menu(app, "always", "Always", visible_when=lambda: True)
     def always():
         return "never"
 
     @app.route("/never")
+    @register_menu(app, "never", "Never", visible_when=lambda: False)
     def never():
         return "never"
 
     @app.route("/normal/<int:id>/")
+    @register_menu(app, "normal", "Normal")
     def normal(id):
         return "normal"
 
@@ -200,26 +282,24 @@ def test_visible_when_with_dynamic(app):
 
 def test_active_item(app):
     """Test active_item method."""
-    menu = app.extensions["menu"]
-
-    menu.submenu("root").register("root", "root")
-    menu.submenu("root.sub1.item1").register("sub1_item1", "Sub 1 - Item 1")
-    menu.submenu("root.sub2.item1").register("sub2_item1", "Sub 2 - Item 1")
-    menu.submenu("root.sub2.item2").register("sub2_item2", "Sub 2 - Item 2")
 
     @app.route("/")
+    @register_menu(app, "root", "root")
     def root():
         return "root"
 
     @app.route("/sub1/item1")
+    @register_menu(app, "root.sub1.item1", "Sub 1 - Item 1")
     def sub1_item1():
         return "sub1_item1"
 
     @app.route("/sub2/item1")
+    @register_menu(app, "root.sub2.item1", "Sub 2 - Item 1")
     def sub2_item1():
         return "sub2_item1"
 
     @app.route("/sub2/item2")
+    @register_menu(app, "root.sub2.item2", "Sub 2 - Item 2")
     def sub2_item2():
         return "sub2_item2"
 
@@ -238,31 +318,30 @@ def test_active_item(app):
 
 def test_active_when(app):
     """Test active when."""
-    menu = app.extensions["menu"]
-
-    menu.submenu("root").register("root", "Root")
-    menu.submenu("always").register("always", "Always", active_when=lambda: True)
-    menu.submenu("never").register("never", "Never", active_when=lambda: False)
-    menu.submenu("normal").register(
-        "normal",
-        "Normal",
-        active_when=lambda self: request.endpoint == self._endpoint,
-    )
 
     @app.route("/")
+    @register_menu(app, "root", "Root")
     def root():
         return "root"
 
     @app.route("/always")
+    @register_menu(app, "always", "Always", active_when=lambda: True)
     def always():
         return "always"
 
     @app.route("/never")
+    @register_menu(app, "never", "Never", active_when=lambda: False)
     def never():
         return "never"
 
     @app.route("/normal")
     @app.route("/normal/<path:path>")
+    @register_menu(
+        app,
+        "normal",
+        "Normal",
+        active_when=lambda self: request.endpoint == self._endpoint,
+    )
     def normal(path=None):
         return "normal"
 
@@ -310,9 +389,9 @@ def test_active_when(app):
 def test_dynamic_url(app):
     """Test dynamic url."""
 
-    menu = app.extensions["menu"]
-
-    menu.submenu("test").register(
+    @app.route("/<int:id>/<string:name>")
+    @register_menu(
+        app,
         "test",
         "Test",
         endpoint_arguments_constructor=lambda: {
@@ -320,8 +399,6 @@ def test_dynamic_url(app):
             "name": request.view_args["name"],
         },
     )
-
-    @app.route("/<int:id>/<string:name>")
     def test(id, name):
         return str(id) + ":" + name
 
@@ -338,11 +415,8 @@ def test_kwargs(app):
     """Test optional arguments."""
     count = 5
 
-    menu = app.extensions["menu"]
-
-    menu.submenu("test").register("test", "Test", count=count)
-
     @app.route("/test")
+    @register_menu(app, "test", "Test", count=count)
     def test():
         return "count"
 
@@ -353,30 +427,27 @@ def test_kwargs(app):
 
 def test_kwargs_override(app):
     """Test if optional arguments cannot be overriden."""
-    menu = app.extensions["menu"]
 
     @app.route("/test")
     def test():
         return "view test"
 
     with raises(RuntimeError):
-        menu.submenu("test").register("test", "Test", url="/test")
+        current_menu.submenu("test").register("test", "Test", url="/test")
 
 
 def test_external_url(app):
     """Test that external_url works, and is not overriding endpoint."""
-    menu = app.extensions["menu"]
-
     url = "https://python.org"
 
-    item1 = menu.submenu("menuitem1")
+    item1 = current_menu.submenu("menuitem1")
 
     # Do not allow endpoint and external_url at the same time.
     with raises(TypeError):
         item1.register(endpoint="test", text="Test", external_url=url)
 
     item1.register(text="Test", external_url=url)
-    assert menu.submenu("menuitem1").url == url
+    assert current_menu.submenu("menuitem1").url == url
 
 
 def test_double_instantiation(app):
@@ -401,16 +472,13 @@ def test_dynamic_list_constructor(app):
     def get_menu_items():
         return bar
 
-    menu = app.extensions["menu"]
-
-    menu.submenu("foo").register("foo", "foo", dynamic_list_constructor=get_menu_items)
-    menu.submenu("other").register("other", "Other")
-
     @app.route("/")
+    @register_menu(app, "foo", "foo", dynamic_list_constructor=get_menu_items)
     def foo():
         return "foo"
 
     @app.route("/other")
+    @register_menu(app, "other", "Other")
     def other():
         return "other"
 
@@ -431,18 +499,6 @@ def test_app_without_existing_extensions(app):
 
 def test_has_visible_child(app):
     """Test has visible child."""
-    menu = app.extensions["menu"]
-
-    menu.submenu("one.four").register(
-        "one_four", "One Four", visible_when=lambda: False
-    )
-    menu.submenu("six.seven").register(
-        "six_seven", "Six Seven", visible_when=lambda: False
-    )
-    menu.submenu("six.seven.eight").register("six_seven_eight", "Six Seven Eight")
-    menu.submenu("two").register("two", "Trow")
-    menu.submenu("two.three").register("two_three", "Two Three")
-    menu.submenu("two.three.five").register("two_three_five", "Two Three Five")
 
     @app.route("/one")
     def one():
@@ -450,6 +506,7 @@ def test_has_visible_child(app):
 
     # This item should never be visible.
     @app.route("/one/four")
+    @register_menu(app, "one.four", "One Four", visible_when=lambda: False)
     def one_four():
         return "one_four"
 
@@ -459,22 +516,27 @@ def test_has_visible_child(app):
 
     # This item should never be visible.
     @app.route("/six/seven")
+    @register_menu(app, "six.seven", "Six Seven", visible_when=lambda: False)
     def six_seven():
         return "six_seven"
 
     @app.route("/six/seven/eight")
+    @register_menu(app, "six.seven.eight", "Six Seven Eight")
     def six_seven_eight():
         return "six_seven_eight"
 
     @app.route("/two")
+    @register_menu(app, "two", "Trow")
     def two():
         return "two"
 
     @app.route("/two/three")
+    @register_menu(app, "two.three", "Two Three")
     def two_three():
         return "two_three"
 
     @app.route("/two/three/five")
+    @register_menu(app, "two.three.five", "Two Three Five")
     def two_three_five():
         return "two_three_five"
 
@@ -579,16 +641,14 @@ def test_has_visible_child(app):
 
 def test_active_checks_segment_not_prefix(app):
     """Test active checks segment not prefix."""
-    menu = app.extensions["menu"]
-
-    menu.submenu("object").register("object", "Object")
-    menu.submenu("objects").register("objects", "Objects")
 
     @app.route("/object")
+    @register_menu(app, "object", "Object")
     def object():
         return "object"
 
     @app.route("/objects")
+    @register_menu(app, "objects", "Objects")
     def objects():
         return "objects"
 

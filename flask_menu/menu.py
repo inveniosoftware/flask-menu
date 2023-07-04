@@ -26,7 +26,7 @@ def CONDITION_FALSE(*args, **kwargs):
     return False
 
 
-class MenuRoot:
+class MenuNode:
     """Represent a entry node in the menu tree.
 
     Provides information for displaying links (text, url, visible, active).
@@ -34,7 +34,7 @@ class MenuRoot:
     """
 
     def __init__(self, name, parent):
-        """Construct class MenuRoot."""
+        """Construct class MenuNode."""
         self.name = name
         self.parent = parent
 
@@ -132,7 +132,7 @@ class MenuRoot:
             # Create the entry if it does not exist
             if auto_create:
                 # The entry was not found so create a new one
-                next_entry = self._child_entries[path_head] = MenuRoot(path_head, self)
+                next_entry = self._child_entries[path_head] = MenuNode(path_head, self)
             else:
                 # The entry was not found, but we are forbidden to create
                 return None
@@ -221,7 +221,7 @@ class MenuRoot:
     @property
     def text(self):
         """Text."""
-        return self._text or "MenuRoot item not initialised"
+        return self._text or "MenuNode item not initialised"
 
     @property
     def url(self):
