@@ -1,6 +1,13 @@
 Changes
 =======
 
+Version 1.0.0 (released 2023-08-21)
+-----------------------------------
+
+- Large module refactor for allowing contextless usage.
+- Removed Flask-Classy support.
+- Preparation for compatibility with Flask v2.3.x deprecations.
+
 Version 0.7.2 (released 2020-05-07)
 -----------------------------------
 

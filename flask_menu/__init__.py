@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Flask-Menu
-# Copyright (C) 2013, 2014, 2015, 2017 CERN
+# Copyright (C) 2013-2023 CERN
 # Copyright (C) 2017 Marlin Forbes
 # Copyright (C) 2023 Graz University of Technology.
 #
@@ -19,6 +19,6 @@ from .ext import Menu
 from .menu import MenuNode
 from .proxies import current_menu
 
-__version__ = "0.7.2"
+__version__ = "1.0.0"
 
 __all__ = ("current_menu", "Menu", "MenuNode", "__version__", "register_menu")
