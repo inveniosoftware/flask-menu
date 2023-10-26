@@ -107,7 +107,10 @@ class MenuNode:
 
         for key, value in kwargs.items():
             if hasattr(self, key):
-                raise RuntimeError(f"Can not override existing attribute {key}.")
+                if getattr(self, key) != value:
+                    raise RuntimeError(f"Can not override existing attribute {key}.")
+                else:
+                    continue
             setattr(self, key, value)
 
     def submenu(self, path, auto_create=True):
