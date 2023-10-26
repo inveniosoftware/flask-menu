@@ -426,14 +426,14 @@ def test_kwargs(app):
 
 
 def test_kwargs_override(app):
-    """Test if optional arguments cannot be overriden."""
+    """Test if optional arguments cannot be overriden with different value."""
 
     @app.route("/test")
     def test():
         return "view test"
 
     with raises(RuntimeError):
-        current_menu.submenu("test").register("test", "Test", url="/test")
+        current_menu.submenu("test").register("test", "Test", url="/test1")
 
 
 def test_external_url(app):
