@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 0.7.3 (released 2023-10-26)
+-----------------------------------
+
+- menu: skip error when same and equal menu value exists
+
 Version 0.7.2 (released 2020-05-07)
 -----------------------------------
 
