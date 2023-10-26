@@ -143,8 +143,7 @@ class MenuEntryMixin(object):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 if getattr(self, key) != value:
-                    raise RuntimeError('Can not override existing attribute '
-                                    '{0}.'.format(key))
+                    raise RuntimeError(f"Can not override existing attribute {key}.")
                 else:
                     continue
             setattr(self, key, value)
