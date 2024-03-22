@@ -19,6 +19,6 @@ from .ext import Menu
 from .menu import MenuNode
 from .proxies import current_menu
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 __all__ = ("current_menu", "Menu", "MenuNode", "__version__", "register_menu")
