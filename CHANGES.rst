@@ -1,6 +1,12 @@
 Changes
 =======
 
+Version 2.0.0 (released 2024-11-19)
+-----------------------------------
+
+- break: remove decorator
+- setup: remove flask upper pin
+
 Version 1.0.1 (released 2024-03-22)
 -----------------------------------
 
