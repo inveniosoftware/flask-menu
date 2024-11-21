@@ -13,6 +13,7 @@
 
 from flask import current_app, g
 
+from . import config
 from .menu import MenuNode
 
 
@@ -34,6 +35,8 @@ class Menu:
         if "menu" in app.extensions:
             raise RuntimeError("Flask application is already initialized.")
 
+        self.init_config(app)
+
         app.extensions["menu"] = self
 
         app.context_processor(lambda: {"current_menu": Menu.root()})
@@ -43,6 +46,10 @@ class Menu:
             """Store the current route endpoint and arguments."""
             g._menu_kwargs = args
             g._menu_route = route
+
+    def init_config(self, app):
+        "Initialize configuration."
+        app.config.setdefault("FLASK_MENU", getattr(config, "FLASK_MENU"))
 
     @staticmethod
     def root():
