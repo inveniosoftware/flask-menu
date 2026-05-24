@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
-#
-# This file is part of Flask-Menu
-# Copyright (C) 2013, 2014, 2015 CERN.
-#
-# Flask-Menu is free software; you can redistribute it and/or modify
-# it under the terms of the Revised BSD License; see LICENSE file for
-# more details.
+# SPDX-FileCopyrightText: 2013, 2014, 2015 CERN.
+# SPDX-License-Identifier: BSD-3-Clause
 
 import os
 import sys
