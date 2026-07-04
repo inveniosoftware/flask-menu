@@ -1,4 +1,65 @@
-[build-system]
-requires = ["setuptools", "wheel", "babel>2.8"]
-build-backend = "setuptools.build_meta"
+# SPDX-FileCopyrightText: 2013, 2014, 2015 CERN.
+# SPDX-FileCopyrightText: 2013, 2014 CERN.
+# SPDX-FileCopyrightText: 2022 Graz University of Technology.
+# SPDX-FileCopyrightText: 2023 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 TU Wien.
+# SPDX-License-Identifier: MIT
 
+[project]
+name = "flask-menu"
+description = "Flask-Menu is a Flask extension that adds support for generating menus."
+readme = "README.rst"
+requires-python = ">=3.7"
+license = "BSD-3-Clause"
+authors = [
+  { name = "Invenio collaboration", email = "info@inveniosoftware.org" },
+]
+keywords = [
+  "Invenio",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+]
+dependencies = [
+  "flask>=2.0.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/inveniosoftware/flask-menu"
+
+[project.optional-dependencies]
+tests = [
+  "check-manifest>=0.49",
+  "pytest>=7.4.4,<9",
+  "pytest-black>=0.6.0",
+  "pytest-cov>=4.1.0",
+  "pytest-flask>=1.2.0",
+  "pytest-isort>=3.1.0",
+  "pytest-pydocstyle>=2.3.2",
+  "sphinx>=4.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "flask_menu/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/flask_menu",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.pydocstyle]
+add_ignore = "D401"
+
+[tool.pytest.ini_options]
+addopts = '--black --isort --pydocstyle --doctest-glob="*.rst" --doctest-modules --cov=flask_menu --cov-report=term-missing'
+filterwarnings = ["ignore::pytest.PytestDeprecationWarning"]
+testpaths = "tests flask_menu"
+live_server_scope = "module"
