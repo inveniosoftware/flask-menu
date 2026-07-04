@@ -122,7 +122,7 @@ class MenuNode:
         if not path or path in [".", ""]:
             return self
 
-        (path_head, dot, path_tail) = path.partition(".")
+        path_head, dot, path_tail = path.partition(".")
 
         if path_head == "":
             next_entry = self
