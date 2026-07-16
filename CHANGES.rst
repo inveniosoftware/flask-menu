@@ -1,6 +1,14 @@
 Changes
 =======
 
+
+Version v2.0.1 (released 2026-07-16)
+-----------------------------------
+
+- chore(setup): migrate from setuptools to hatchling
+- chore(git-blame): ignore SPDX license header commit
+- chore(licenses): update license headers to use SPDX
+
 Version 2.0.0 (released 2024-11-19)
 -----------------------------------
 
