@@ -9,7 +9,7 @@
 name = "flask-menu"
 description = "Flask-Menu is a Flask extension that adds support for generating menus."
 readme = "README.rst"
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 license = "BSD-3-Clause"
 authors = [
   { name = "Invenio collaboration", email = "info@inveniosoftware.org" },
